@@ -9,6 +9,7 @@ import com.krishagni.catissueplus.core.administrative.repository.DistributionPro
 import com.krishagni.catissueplus.core.administrative.repository.DpRequirementDao;
 import com.krishagni.catissueplus.core.administrative.repository.InstituteDao;
 import com.krishagni.catissueplus.core.administrative.repository.PermissibleValueDao;
+import com.krishagni.catissueplus.core.administrative.repository.PrintRuleDao;
 import com.krishagni.catissueplus.core.administrative.repository.ScheduledJobDao;
 import com.krishagni.catissueplus.core.administrative.repository.ShipmentDao;
 import com.krishagni.catissueplus.core.administrative.repository.SiteDao;
@@ -21,6 +22,7 @@ import com.krishagni.catissueplus.core.administrative.repository.impl.Distributi
 import com.krishagni.catissueplus.core.administrative.repository.impl.DpRequirementDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.InstituteDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.PermissibleValueDaoImpl;
+import com.krishagni.catissueplus.core.administrative.repository.impl.PrintRuleDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ScheduledJobDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ShipmentDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.SiteDaoImpl;
@@ -235,6 +237,13 @@ public class DaoFactoryImpl implements DaoFactory {
 	@Override
 	public UpgradeLogDao getUpgradeLogDao() {
 		UpgradeLogDaoImpl dao = new UpgradeLogDaoImpl();
+		setSessionFactory(dao);
+		return dao;
+	}
+
+	@Override
+	public PrintRuleDao getPrintRuleDao() {
+		PrintRuleDaoImpl dao = new PrintRuleDaoImpl();
 		setSessionFactory(dao);
 		return dao;
 	}

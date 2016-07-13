@@ -953,7 +953,16 @@
       </list>
     </property>
   </bean>
-  
+
+  <bean id="printRulesSvc" class="com.krishagni.catissueplus.core.administrative.services.impl.PrintRuleServiceImpl">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+    <property name="printRuleFactory" ref="printRuleFactoryImpl"/>
+  </bean>
+
+  <bean id="printRuleFactoryImpl" class="com.krishagni.catissueplus.core.administrative.domain.factory.impl.PrintRuleFactoryImpl">
+    <property name="daoFactory" ref="biospecimenDaoFactory"/>
+  </bean>
+
   <task:scheduler id="taskScheduler" pool-size="1"/>
   <task:annotation-driven scheduler="taskScheduler"/>
   <context:annotation-config/>

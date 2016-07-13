@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping auto-import="false">
+  <class
+    name="com.krishagni.catissueplus.core.administrative.domain.PrintRule"
+    table="OS_PRINT_RULES">
+	
+    <id name="id" column="IDENTIFIER">
+      <generator class="native">
+        <param name="sequence">OS_PRINT_RULES_SEQ</param>
+      </generator>
+    </id>
+
+    <many-to-one name="user" column="USER_ID"/>
+
+    <many-to-one name="site" column="SITE_ID"/>
+
+    <many-to-one name="cp" column="CP_ID"/>
+
+    <property name="ipRange" column="IP_RANGE"/>
+
+    <property name="labelType" column="LABEL_TYPE"/>
+
+    <property name="labelDesign" column="LABEL_DESIGN"/>
+
+    <property name="printerName" column="PRINTER"/>
+
+    <property name="cmdFileFormat" column="CMD_FILE_FMT"/>
+
+    <property name="cmdFileDirectory" column="CMD_FILE_DIR"/>
+
+    <set name="tokens" table="OS_PRINT_LABEL_TOKENS" cascade="all-delete-orphan">
+      <key column="RULE_ID" />
+      <element column="TOKEN" type="string" />
+    </set>
+
+  </class>
+</hibernate-mapping>

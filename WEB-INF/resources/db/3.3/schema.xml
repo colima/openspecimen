@@ -217,4 +217,71 @@
   <changeSet author="vpawar" id="Drop specimen units as units are stored as PV properties">
     <dropTable tableName="OS_SPECIMEN_UNITS"/>
   </changeSet>
-</databaseChangeLog>	
+
+  <changeSet id="Printing rules table" author="pJoshi">
+    <createTable tableName="OS_PRINT_RULES">
+      <column name="IDENTIFIER" type="${int.type}" autoIncrement="${autoIncrement}">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+
+      <column name="SITE_ID" type="${int.type}">
+      </column>
+
+      <column name="CP_ID" type="${int.type}">
+      </column>
+
+      <column name="USER_ID" type="${int.type}">
+      </column>
+
+      <column name="IP_RANGE" type="${text.type}(64)">
+      </column>
+
+      <column name="LABEL_TYPE" type="${text.type}(32)">
+      </column>
+
+      <column name="LABEL_DESIGN" type="${text.type}(64)">
+      </column>
+
+      <column name="PRINTER" type="${text.type}(32)">
+      </column>
+
+      <column name="CMD_FILE_FMT" type="${text.type}(64)">
+      </column>
+
+      <column name="CMD_FILE_DIR" type="${text.type}(64)">
+      </column>
+
+    </createTable>
+  </changeSet>
+
+  <changeSet id="Printing rule tokens table" author="pJoshi">
+    <createTable tableName="OS_PRINT_LABEL_TOKENS">
+
+      <column name="RULE_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="TOKEN" type="${text.type}(32)">
+      </column>
+
+    </createTable>
+  </changeSet>
+
+  <changeSet author="pJoshi" id="FK for tokens Table">
+    <addForeignKeyConstraint
+      constraintName="FK_LABEL_TOKENS_ID"
+      baseTableName="OS_PRINT_LABEL_TOKENS"
+      baseColumnNames="RULE_ID"
+      referencedTableName="OS_PRINT_RULES"
+      referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
+
+  <changeSet author="pJoshi" id="Print rules sequence" dbms="oracle">
+    <createSequence
+      sequenceName="OS_PRINT_RULES_SEQ"
+      startValue="1"
+      incrementBy="1"
+      ordered="true"/>
+  </changeSet>
+</databaseChangeLog>
+
