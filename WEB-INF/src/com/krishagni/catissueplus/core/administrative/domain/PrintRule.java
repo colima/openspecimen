@@ -4,22 +4,17 @@ package com.krishagni.catissueplus.core.administrative.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.krishagni.catissueplus.core.biospecimen.domain.BaseEntity;
+import com.krishagni.catissueplus.core.biospecimen.domain.BaseExtensionEntity;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
+import com.krishagni.catissueplus.core.common.CollectionUpdater;
 
-public class PrintRule extends BaseEntity {
+public class PrintRule extends BaseExtensionEntity {
 
 	public User user;
 
 	public Site site;
 
 	public CollectionProtocol cp;
-
-	public Long userId;
-
-	public Long siteId;
-
-	public Long cpId;
 
 	public String labelType;
 
@@ -43,14 +38,6 @@ public class PrintRule extends BaseEntity {
 
 	public String cmdFileDirectory;
 
-	public long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long id) {
-		this.userId = id;
-	}
-
 	public User getUser() {
 		return user;
 	}
@@ -69,14 +56,6 @@ public class PrintRule extends BaseEntity {
 
 	public CollectionProtocol getCp() {
 		return cp;
-	}
-
-	public Long getSiteId() {
-		return siteId;
-	}
-
-	public void setSiteId(Long siteId) {
-		this.siteId = siteId;
 	}
 
 	public void setCp(CollectionProtocol cp) {
@@ -132,12 +111,19 @@ public class PrintRule extends BaseEntity {
 		this.cmdFileDirectory = cmdFileDirectory;
 	}
 
-	public Long getCpId() {
-		return cpId;
-	}
+	public String getEntityType() {return null;	}
 
-	public void setCpId(Long cpId) {
-		this.cpId = cpId;
+	public void update(PrintRule newRule) {
+		setUser(newRule.getUser());
+		setSite(newRule.getSite());
+		setCp(newRule.getCp());
+		setLabelType(newRule.getLabelType());
+		setLabelDesign(newRule.getLabelDesign());
+		setIpRange(newRule.getIpRange());
+		setPrinterName(newRule.getPrinterName());
+		setCmdFileFormat(newRule.getCmdFileFormat());
+		setCmdFileDirectory(newRule.getCmdFileDirectory());
+		CollectionUpdater.update(getTokens(), newRule.getTokens());
 	}
 
 }

@@ -7,10 +7,13 @@ import java.util.Set;
 import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
 import com.krishagni.catissueplus.core.common.ListenAttributeChanges;
 import com.krishagni.catissueplus.core.common.events.UserSummary;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 
 @ListenAttributeChanges
 public class PrintRuledetail {
+
+	private Long id;
 
 	private UserSummary user;
 
@@ -111,6 +114,14 @@ public class PrintRuledetail {
 		this.tokens = tokens;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public static PrintRuledetail from(PrintRule rule) {
 		PrintRuledetail detail = new PrintRuledetail();
 		detail.setIpRange(rule.getIpRange());
@@ -119,8 +130,12 @@ public class PrintRuledetail {
 		detail.setPrinterName(rule.getPrinterName());
 		detail.setCmdFileFormat(rule.getCmdFileFormat());
 		detail.setCmdFileDirectory(rule.getCmdFileDirectory());
+		detail.setId(rule.getId());
+		if(rule.getUser()!= null)
 		detail.setUser(UserSummary.from(rule.getUser()));
+		if(rule.getCp()!= null)
 		detail.setCpShortTitle(rule.getCp().getShortTitle());
+		if(rule.getSite()!= null)
 		detail.setSiteName(rule.getSite().getName());
 		detail.setTokens(rule.getTokens());
 

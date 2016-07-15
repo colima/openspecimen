@@ -49,32 +49,40 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 	}
 
 	private void setSite(PrintRuledetail detail, PrintRule rule, OpenSpecimenException ose) {
-		Site site = null;
-		site = daoFactory.getSiteDao().getSiteByName(detail.getSiteName());
+		if (StringUtils.isBlank(detail.getSiteName())) {
+			return;
+		}
 
+		Site site = daoFactory.getSiteDao().getSiteByName(detail.getSiteName());
 		if (site == null) {
 			ose.addError(SiteErrorCode.NOT_FOUND);
 			return;
 		}
-		else {
-			rule.setSite(site);
-		}
+
+		rule.setSite(site);
+
 	}
 
 	private void setCollectionProtocol(PrintRuledetail detail, PrintRule rule, OpenSpecimenException ose) {
-		CollectionProtocol cp = null;
-		cp = daoFactory.getCollectionProtocolDao().getCpByShortTitle(detail.getCpShortTitle());
+		if (StringUtils.isBlank(detail.getCpShortTitle())) {
+			return;
+		}
+
+		CollectionProtocol cp = daoFactory.getCollectionProtocolDao().getCpByShortTitle(detail.getCpShortTitle());
 		if (cp == null) {
 			ose.addError(CpErrorCode.NOT_FOUND);
 			return;
 		}
-		else {
-			rule.setCp(cp);
-		}
+
+		rule.setCp(cp);
 	}
 
 	private void setUser(PrintRuledetail detail, PrintRule rule, OpenSpecimenException ose) {
 		UserSummary user = detail.getUser();
+
+		if(user==null)
+			return;
+
 		User pi = getUser(user);
 		if (pi == null) {
 			ose.addError(UserErrorCode.NOT_FOUND);
