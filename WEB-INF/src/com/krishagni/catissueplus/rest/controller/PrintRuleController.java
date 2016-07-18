@@ -56,7 +56,6 @@ public class PrintRuleController {
 		return resp.getPayload();
 	}
 
-
 	private <T> RequestEvent<T> getRequest(T payload) {
 		return new RequestEvent<T>(payload);
 	}

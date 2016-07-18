@@ -156,8 +156,6 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 	}
 
 	private void setActivityStatus(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-
-
 		String activityStatus = detail.getActivityStatus();
 		if (StringUtils.isBlank(activityStatus) || activityStatus == null) {
 			activityStatus = Status.ACTIVITY_STATUS_ACTIVE.getStatus();

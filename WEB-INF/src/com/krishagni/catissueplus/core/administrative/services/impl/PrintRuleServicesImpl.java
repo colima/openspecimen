@@ -66,7 +66,6 @@ class PrintRuleServiceImpl implements PrintRuleService {
 	@PlusTransactional
 	public ResponseEvent<PrintRuleDetail> deletePrintRule(RequestEvent<Long> req) {
 		try {
-
 			Long id = req.getPayload();
 			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(id);
 
@@ -82,5 +81,4 @@ class PrintRuleServiceImpl implements PrintRuleService {
 			return ResponseEvent.serverError(e);
 		}
 	}
-
 }

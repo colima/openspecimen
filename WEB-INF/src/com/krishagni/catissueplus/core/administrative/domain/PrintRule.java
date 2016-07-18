@@ -11,44 +11,27 @@ import com.krishagni.catissueplus.core.common.util.Status;
 
 public class PrintRule extends BaseExtensionEntity {
 
-	public User user;
-
 	public Site site;
 
 	public CollectionProtocol cp;
+
+	public User user;
+
+	public String ipRange;
 
 	public String labelType;
 
 	public String labelDesign;
 
-	public String ipRange;
-
 	public String printerName;
 
 	public String cmdFileFormat;
 
-	private String activityStatus;
-
-
-	public Set<String> tokens = new HashSet<>();
-
-	public Set<String> getTokens() {
-		return tokens;
-	}
-
-	public void setTokens(Set<String> tokens) {
-		this.tokens = tokens;
-	}
-
 	public String cmdFileDirectory;
 
-	public User getUser() {
-		return user;
-	}
+	private String activityStatus;
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+	public Set<String> tokens = new HashSet<>();
 
 	public Site getSite() {
 		return site;
@@ -64,7 +47,6 @@ public class PrintRule extends BaseExtensionEntity {
 
 	public void setCp(CollectionProtocol cp) {
 		this.cp = cp;
-
 	}
 
 	public String getIpRange() {
@@ -73,6 +55,14 @@ public class PrintRule extends BaseExtensionEntity {
 
 	public void setIpRange(String ipRange) {
 		this.ipRange = ipRange;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getLabelType() {
@@ -125,13 +115,21 @@ public class PrintRule extends BaseExtensionEntity {
 		this.activityStatus = activityStatus;
 	}
 
+	public Set<String> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(Set<String> tokens) {
+		this.tokens = tokens;
+	}
+
 	public void update(PrintRule newRule) {
-		setUser(newRule.getUser());
 		setSite(newRule.getSite());
 		setCp(newRule.getCp());
+		setUser(newRule.getUser());
+		setIpRange(newRule.getIpRange());
 		setLabelType(newRule.getLabelType());
 		setLabelDesign(newRule.getLabelDesign());
-		setIpRange(newRule.getIpRange());
 		setPrinterName(newRule.getPrinterName());
 		setCmdFileFormat(newRule.getCmdFileFormat());
 		setCmdFileDirectory(newRule.getCmdFileDirectory());
