@@ -5,11 +5,10 @@ package com.krishagni.catissueplus.core.administrative.services.impl;
 import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleFactory;
-import com.krishagni.catissueplus.core.administrative.events.PrintRuledetail;
+import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.services.PrintRuleService;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
-import com.krishagni.catissueplus.core.common.access.AccessCtrlMgr;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
@@ -30,20 +29,20 @@ class PrintRuleServiceImpl implements PrintRuleService {
 
 	@Override
 	@PlusTransactional
-	public ResponseEvent<PrintRuledetail> createRule(RequestEvent<PrintRuledetail> req) {
+	public ResponseEvent<PrintRuleDetail> createRule(RequestEvent<PrintRuleDetail> req) {
 
-		PrintRuledetail detail = req.getPayload();
+		PrintRuleDetail detail = req.getPayload();
 		PrintRule rule = printRuleFactory.createPrintRule(detail);
 		daoFactory.getPrintRuleDao().saveOrUpdate(rule);
 
-		return ResponseEvent.response(PrintRuledetail.from(rule));
+		return ResponseEvent.response(PrintRuleDetail.from(rule));
 	}
 
 	@Override
 	@PlusTransactional
-	public ResponseEvent<PrintRuledetail> updatePrintRule(RequestEvent<PrintRuledetail> req) {
+	public ResponseEvent<PrintRuleDetail> updatePrintRule(RequestEvent<PrintRuleDetail> req) {
 		try {
-			PrintRuledetail input = req.getPayload();
+			PrintRuleDetail input = req.getPayload();
 			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(req.getPayload().getId());
 
 			if (existingRule == null) {
@@ -55,11 +54,32 @@ class PrintRuleServiceImpl implements PrintRuleService {
 			existingRule.update(newRule);
 			daoFactory.getPrintRuleDao().saveOrUpdate(existingRule);
 			existingRule.addOrUpdateExtension();
-			return ResponseEvent.response(PrintRuledetail.from(existingRule));
+			return ResponseEvent.response(PrintRuleDetail.from(existingRule));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception ex) {
 			return ResponseEvent.serverError(ex);
+		}
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<PrintRuleDetail> deletePrintRule(RequestEvent<Long> req) {
+		try {
+
+			Long id = req.getPayload();
+			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(id);
+
+			if (existingRule == null) {
+				return ResponseEvent.userError(PrintRuleErrorCode.RULE_NOT_FOUND);
+			}
+
+			existingRule.delete();
+			return ResponseEvent.response(PrintRuleDetail.from(existingRule));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
 		}
 	}
 

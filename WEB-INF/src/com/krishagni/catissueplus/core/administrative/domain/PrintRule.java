@@ -7,6 +7,7 @@ import java.util.Set;
 import com.krishagni.catissueplus.core.biospecimen.domain.BaseExtensionEntity;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.common.CollectionUpdater;
+import com.krishagni.catissueplus.core.common.util.Status;
 
 public class PrintRule extends BaseExtensionEntity {
 
@@ -26,7 +27,10 @@ public class PrintRule extends BaseExtensionEntity {
 
 	public String cmdFileFormat;
 
-	public Set<String> tokens = new HashSet<String>();
+	private String activityStatus;
+
+
+	public Set<String> tokens = new HashSet<>();
 
 	public Set<String> getTokens() {
 		return tokens;
@@ -113,6 +117,14 @@ public class PrintRule extends BaseExtensionEntity {
 
 	public String getEntityType() {return null;	}
 
+	public String getActivityStatus() {
+		return activityStatus;
+	}
+
+	public void setActivityStatus(String activityStatus) {
+		this.activityStatus = activityStatus;
+	}
+
 	public void update(PrintRule newRule) {
 		setUser(newRule.getUser());
 		setSite(newRule.getSite());
@@ -126,4 +138,7 @@ public class PrintRule extends BaseExtensionEntity {
 		CollectionUpdater.update(getTokens(), newRule.getTokens());
 	}
 
+	public void delete() {
+		setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
+	}
 }

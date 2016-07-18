@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.krishagni.catissueplus.core.administrative.events.DistributionProtocolDetail;
-import com.krishagni.catissueplus.core.administrative.events.PrintRuledetail;
+import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.services.PrintRuleService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
@@ -26,10 +25,10 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/visit")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public PrintRuledetail specimenPrintRule (@RequestBody PrintRuledetail printRule) {
+	public PrintRuleDetail visitPrintRule (@RequestBody PrintRuleDetail printRule) {
 
-		RequestEvent<PrintRuledetail> req = new RequestEvent<PrintRuledetail>(printRule);
-		ResponseEvent<PrintRuledetail> resp = printRuleSvc.createRule(req);
+		RequestEvent<PrintRuleDetail> req = new RequestEvent<PrintRuleDetail>(printRule);
+		ResponseEvent<PrintRuleDetail> resp = printRuleSvc.createRule(req);
 		resp.throwErrorIfUnsuccessful();
 
 		return resp.getPayload();
@@ -39,13 +38,24 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public PrintRuledetail updatePrintRule(@PathVariable Long id, @RequestBody PrintRuledetail detail) {
+	public PrintRuleDetail updatePrintRule(@PathVariable Long id, @RequestBody PrintRuleDetail detail) {
 		detail.setId(id);
-		ResponseEvent<PrintRuledetail> resp = printRuleSvc.updatePrintRule(getRequest(detail));
+		ResponseEvent<PrintRuleDetail> resp = printRuleSvc.updatePrintRule(getRequest(detail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 
 	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public PrintRuleDetail deleteDistributionProtocol(@PathVariable Long id) {
+		RequestEvent<Long> req = new RequestEvent<>(id);
+		ResponseEvent<PrintRuleDetail> resp  = printRuleSvc.deletePrintRule(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 
 	private <T> RequestEvent<T> getRequest(T payload) {
 		return new RequestEvent<T>(payload);
