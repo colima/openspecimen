@@ -81,9 +81,7 @@ public class PrintRuleDetail {
 		this.labelType = labelType;
 	}
 
-	public String getLabelDesign() {
-		return labelDesign;
-	}
+	public String getLabelDesign() { return labelDesign;	}
 
 	public void setLabelDesign(String labelDesign) {
 		this.labelDesign = labelDesign;
@@ -105,8 +103,7 @@ public class PrintRuleDetail {
 		this.cmdFileFormat = cmdFileFormat;
 	}
 
-	public String getCmdFileDirectory() { return cmdFileDirectory;
-	}
+	public String getCmdFileDirectory() { return cmdFileDirectory;	}
 
 	public void setCmdFileDirectory(String cmdFileDirectory) {
 		this.cmdFileDirectory = cmdFileDirectory;
@@ -136,8 +133,8 @@ public class PrintRuleDetail {
 			detail.setSiteName(rule.getSite().getName());
 		}
 
-		if(rule.getCp() != null) {
-			detail.setCpShortTitle(rule.getCp().getShortTitle());
+		if(rule.getCollectionProtocol() != null) {
+			detail.setCpShortTitle(rule.getCollectionProtocol().getShortTitle());
 		}
 
 		if(rule.getUser()!= null) {

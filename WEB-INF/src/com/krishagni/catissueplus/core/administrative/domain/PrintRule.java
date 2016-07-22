@@ -4,16 +4,16 @@ package com.krishagni.catissueplus.core.administrative.domain;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.krishagni.catissueplus.core.biospecimen.domain.BaseExtensionEntity;
+import com.krishagni.catissueplus.core.biospecimen.domain.BaseEntity;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.common.CollectionUpdater;
 import com.krishagni.catissueplus.core.common.util.Status;
 
-public class PrintRule extends BaseExtensionEntity {
+public class PrintRule extends BaseEntity {
 
 	public Site site;
 
-	public CollectionProtocol cp;
+	public CollectionProtocol collectionProtocol;
 
 	public User user;
 
@@ -29,9 +29,9 @@ public class PrintRule extends BaseExtensionEntity {
 
 	public String cmdFileDirectory;
 
-	private String activityStatus;
-
 	public Set<String> tokens = new HashSet<>();
+
+	private String activityStatus;
 
 	public Site getSite() {
 		return site;
@@ -41,20 +41,12 @@ public class PrintRule extends BaseExtensionEntity {
 		this.site = site;
 	}
 
-	public CollectionProtocol getCp() {
-		return cp;
+	public CollectionProtocol getCollectionProtocol() {
+		return collectionProtocol;
 	}
 
-	public void setCp(CollectionProtocol cp) {
-		this.cp = cp;
-	}
-
-	public String getIpRange() {
-		return ipRange;
-	}
-
-	public void setIpRange(String ipRange) {
-		this.ipRange = ipRange;
+	public void setCollectionProtocol(CollectionProtocol collectionProtocol) {
+		this.collectionProtocol = collectionProtocol;
 	}
 
 	public User getUser() {
@@ -63,6 +55,14 @@ public class PrintRule extends BaseExtensionEntity {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getIpRange() {
+		return ipRange;
+	}
+
+	public void setIpRange(String ipRange) {
+		this.ipRange = ipRange;
 	}
 
 	public String getLabelType() {
@@ -105,7 +105,13 @@ public class PrintRule extends BaseExtensionEntity {
 		this.cmdFileDirectory = cmdFileDirectory;
 	}
 
-	public String getEntityType() {return null;	}
+	public Set<String> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(Set<String> tokens) {
+		this.tokens = tokens;
+	}
 
 	public String getActivityStatus() {
 		return activityStatus;
@@ -115,25 +121,17 @@ public class PrintRule extends BaseExtensionEntity {
 		this.activityStatus = activityStatus;
 	}
 
-	public Set<String> getTokens() {
-		return tokens;
-	}
-
-	public void setTokens(Set<String> tokens) {
-		this.tokens = tokens;
-	}
-
-	public void update(PrintRule newRule) {
-		setSite(newRule.getSite());
-		setCp(newRule.getCp());
-		setUser(newRule.getUser());
-		setIpRange(newRule.getIpRange());
-		setLabelType(newRule.getLabelType());
-		setLabelDesign(newRule.getLabelDesign());
-		setPrinterName(newRule.getPrinterName());
-		setCmdFileFormat(newRule.getCmdFileFormat());
-		setCmdFileDirectory(newRule.getCmdFileDirectory());
-		CollectionUpdater.update(getTokens(), newRule.getTokens());
+	public void update(PrintRule rule) {
+		setSite(rule.getSite());
+		setCollectionProtocol(rule.getCollectionProtocol());
+		setUser(rule.getUser());
+		setIpRange(rule.getIpRange());
+		setLabelType(rule.getLabelType());
+		setLabelDesign(rule.getLabelDesign());
+		setPrinterName(rule.getPrinterName());
+		setCmdFileFormat(rule.getCmdFileFormat());
+		setCmdFileDirectory(rule.getCmdFileDirectory());
+		CollectionUpdater.update(getTokens(), rule.getTokens());
 	}
 
 	public void delete() {

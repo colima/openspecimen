@@ -30,7 +30,6 @@ class PrintRuleServiceImpl implements PrintRuleService {
 	@Override
 	@PlusTransactional
 	public ResponseEvent<PrintRuleDetail> createRule(RequestEvent<PrintRuleDetail> req) {
-
 		PrintRuleDetail detail = req.getPayload();
 		PrintRule rule = printRuleFactory.createPrintRule(detail);
 		daoFactory.getPrintRuleDao().saveOrUpdate(rule);
@@ -42,18 +41,17 @@ class PrintRuleServiceImpl implements PrintRuleService {
 	@PlusTransactional
 	public ResponseEvent<PrintRuleDetail> updatePrintRule(RequestEvent<PrintRuleDetail> req) {
 		try {
-			PrintRuleDetail input = req.getPayload();
-			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(req.getPayload().getId());
+			PrintRuleDetail detail = req.getPayload();
+			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(detail.getId());
 
 			if (existingRule == null) {
-				return ResponseEvent.userError(PrintRuleErrorCode.RULE_NOT_FOUND);
+				return ResponseEvent.userError(PrintRuleErrorCode.NOT_FOUND,detail.getId());
 			}
 
-			PrintRule newRule = printRuleFactory.createPrintRule(input);
+			PrintRule rule = printRuleFactory.createPrintRule(detail);
 
-			existingRule.update(newRule);
+			existingRule.update(rule);
 			daoFactory.getPrintRuleDao().saveOrUpdate(existingRule);
-			existingRule.addOrUpdateExtension();
 			return ResponseEvent.response(PrintRuleDetail.from(existingRule));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
@@ -66,11 +64,10 @@ class PrintRuleServiceImpl implements PrintRuleService {
 	@PlusTransactional
 	public ResponseEvent<PrintRuleDetail> deletePrintRule(RequestEvent<Long> req) {
 		try {
-			Long id = req.getPayload();
-			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(id);
+			PrintRule existingRule = daoFactory.getPrintRuleDao().getById(req.getPayload());
 
 			if (existingRule == null) {
-				return ResponseEvent.userError(PrintRuleErrorCode.RULE_NOT_FOUND);
+				return ResponseEvent.userError(PrintRuleErrorCode.NOT_FOUND,req.getPayload());
 			}
 
 			existingRule.delete();

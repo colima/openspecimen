@@ -25,31 +25,29 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/visit")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public PrintRuleDetail visitPrintRule (@RequestBody PrintRuleDetail printRule) {
-
+	public PrintRuleDetail createVisitPrintRule (@RequestBody PrintRuleDetail printRule) {
 		RequestEvent<PrintRuleDetail> req = new RequestEvent<PrintRuleDetail>(printRule);
 		ResponseEvent<PrintRuleDetail> resp = printRuleSvc.createRule(req);
 		resp.throwErrorIfUnsuccessful();
 
 		return resp.getPayload();
-
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+	@RequestMapping(method = RequestMethod.PUT, value = "/visit/{id}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public PrintRuleDetail updatePrintRule(@PathVariable Long id, @RequestBody PrintRuleDetail detail) {
+	public PrintRuleDetail updateVisitPrintRule(@PathVariable Long id, @RequestBody PrintRuleDetail detail) {
 		detail.setId(id);
 		ResponseEvent<PrintRuleDetail> resp = printRuleSvc.updatePrintRule(getRequest(detail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
-
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/visit/{id}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public PrintRuleDetail deleteDistributionProtocol(@PathVariable Long id) {
+	public PrintRuleDetail deleteVisitPrintRule(@PathVariable Long id) {
 		RequestEvent<Long> req = new RequestEvent<>(id);
 		ResponseEvent<PrintRuleDetail> resp  = printRuleSvc.deletePrintRule(req);
 		resp.throwErrorIfUnsuccessful();

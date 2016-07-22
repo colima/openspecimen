@@ -25,10 +25,6 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 
 	private DaoFactory daoFactory;
 
-	public DaoFactory getDaoFactory() {
-		return daoFactory;
-	}
-
 	public void setDaoFactory(DaoFactory daoFactory) {
 		this.daoFactory = daoFactory;
 	}
@@ -38,17 +34,19 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 		PrintRule rule = new PrintRule();
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 
-		setSite(detail,rule,ose);
-		setCollectionProtocol(detail,rule,ose);
-		setUser(detail,rule, ose);
-		setIpRange(detail,rule, ose);
-		setLableType(detail,rule, ose);
-		setLabelDesign(detail,rule, ose);
-		setPrinterName(detail,rule, ose);
-		setCmdFileFmt(detail,rule, ose);
-		setCmdFileDirectory(detail,rule, ose);
-		setTokens(detail,rule,ose);
-		setActivityStatus(detail,rule,ose);
+		setSite(detail, rule, ose);
+		setCollectionProtocol(detail, rule, ose);
+		setUser(detail, rule, ose);
+
+		rule.setIpRange(detail.getIpRange());
+		rule.setLabelType(detail.getLabelType());
+		rule.setLabelDesign(detail.getLabelDesign());
+		rule.setPrinterName(detail.getPrinterName());
+		rule.setCmdFileFormat(detail.getCmdFileFormat());
+
+		setCmdFileDirectory(detail, rule, ose);
+		setTokens(detail, rule, ose);
+		setActivityStatus(detail, rule, ose);
 		ose.checkAndThrow();
 		return rule;
 	}
@@ -65,7 +63,6 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 		}
 
 		rule.setSite(site);
-
 	}
 
 	private void setCollectionProtocol(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
@@ -79,22 +76,21 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 			return;
 		}
 
-		rule.setCp(cp);
+		rule.setCollectionProtocol(cp);
 	}
 
 	private void setUser(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-		UserSummary user = detail.getUser();
-
-		if(user==null)
+		UserSummary userdetail = detail.getUser();
+		if(userdetail==null)
 			return;
 
-		User pi = getUser(user);
-		if (pi == null) {
+		User user = getUser(userdetail);
+		if (user == null) {
 			ose.addError(UserErrorCode.NOT_FOUND);
 			return;
-		} else {
-			rule.setUser(pi);
 		}
+
+		rule.setUser(user);
 	}
 
 	private User getUser(UserSummary userDetail) {
@@ -112,31 +108,6 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 		}
 
 		return user;
-	}
-
-	private void setIpRange(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-		String ipRange = detail.getIpRange();
-		rule.setIpRange(ipRange);
-	}
-
-	private void setLableType(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-		String labelType = detail.getLabelType();
-		rule.setLabelType(labelType);
-	}
-
-	private void setLabelDesign(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-		String labelDesign = detail.getLabelDesign();
-		rule.setLabelDesign(labelDesign);
-	}
-
-	private void setPrinterName(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-		String printerName = detail.getPrinterName();
-		rule.setPrinterName(printerName);
-	}
-
-	private void setCmdFileFmt(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
-		String cmdFileFmt = detail.getCmdFileFormat();
-		rule.setCmdFileFormat(cmdFileFmt);
 	}
 
 	private void setCmdFileDirectory(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
@@ -157,15 +128,16 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 
 	private void setActivityStatus(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
 		String activityStatus = detail.getActivityStatus();
-		if (StringUtils.isBlank(activityStatus) || activityStatus == null) {
-			activityStatus = Status.ACTIVITY_STATUS_ACTIVE.getStatus();
+		if (StringUtils.isBlank(activityStatus)) {
+			rule.setActivityStatus(Status.ACTIVITY_STATUS_ACTIVE.getStatus());
+			return;
 		}
+
 		if (!Status.isValidActivityStatus(activityStatus)) {
 			ose.addError(ActivityStatusErrorCode.INVALID);
 			return;
 		}
 
 		rule.setActivityStatus(activityStatus);
-
 	}
 }

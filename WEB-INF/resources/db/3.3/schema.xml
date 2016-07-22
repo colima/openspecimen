@@ -218,7 +218,7 @@
     <dropTable tableName="OS_SPECIMEN_UNITS"/>
   </changeSet>
 
-  <changeSet id="Printing rules table" author="pJoshi">
+  <changeSet author="pjoshi" id="Print rules table">
     <createTable tableName="OS_PRINT_RULES">
       <column name="IDENTIFIER" type="${int.type}" autoIncrement="${autoIncrement}">
         <constraints primaryKey="true" nullable="false"/>
@@ -248,13 +248,15 @@
       <column name="CMD_FILE_FMT" type="${text.type}(64)">
       </column>
 
-      <column name="CMD_FILE_DIR" type="${text.type}(64)">
+      <column name="CMD_FILE_DIR" type="${text.type}(128)">
       </column>
 
+      <column name="ACTIVITY_STATUS" type="${text.type}(32)">
+      </column>
     </createTable>
   </changeSet>
 
-  <changeSet id="Printing rule tokens table" author="pJoshi">
+  <changeSet author="pjoshi" id="Print rule tokens table">
     <createTable tableName="OS_PRINT_LABEL_TOKENS">
 
       <column name="RULE_ID" type="${int.type}">
@@ -263,25 +265,25 @@
 
       <column name="TOKEN" type="${text.type}(32)">
       </column>
-
     </createTable>
   </changeSet>
 
-  <changeSet author="pJoshi" id="FK for tokens Table">
+  <changeSet author="pjoshi" id="FK for tokens Table">
     <addForeignKeyConstraint
-      constraintName="FK_LABEL_TOKENS_ID"
+      constraintName="FK_LABEL_TOKENS_RULE_ID"
       baseTableName="OS_PRINT_LABEL_TOKENS"
       baseColumnNames="RULE_ID"
       referencedTableName="OS_PRINT_RULES"
       referencedColumnNames="IDENTIFIER"/>
   </changeSet>
 
-  <changeSet author="pJoshi" id="Print rules sequence" dbms="oracle">
+  <changeSet author="pjoshi" id="Print rules sequence" dbms="oracle">
     <createSequence
       sequenceName="OS_PRINT_RULES_SEQ"
       startValue="1"
       incrementBy="1"
       ordered="true"/>
   </changeSet>
+
 </databaseChangeLog>
 

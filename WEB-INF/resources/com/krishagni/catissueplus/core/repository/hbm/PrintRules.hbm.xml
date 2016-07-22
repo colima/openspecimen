@@ -18,7 +18,7 @@
 
     <many-to-one name="site" column="SITE_ID"/>
 
-    <many-to-one name="cp" column="CP_ID"/>
+    <many-to-one name="collectionProtocol" column="CP_ID"/>
 
     <property name="ipRange" column="IP_RANGE"/>
 

@@ -954,12 +954,12 @@
     </property>
   </bean>
 
-  <bean id="printRulesSvc" class="com.krishagni.catissueplus.core.administrative.services.impl.PrintRuleServiceImpl">
+  <bean id="printRuleSvc" class="com.krishagni.catissueplus.core.administrative.services.impl.PrintRuleServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
-    <property name="printRuleFactory" ref="printRuleFactoryImpl"/>
+    <property name="printRuleFactory" ref="printRuleFactory"/>
   </bean>
 
-  <bean id="printRuleFactoryImpl" class="com.krishagni.catissueplus.core.administrative.domain.factory.impl.PrintRuleFactoryImpl">
+  <bean id="printRuleFactory" class="com.krishagni.catissueplus.core.administrative.domain.factory.impl.PrintRuleFactoryImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
   </bean>
 
