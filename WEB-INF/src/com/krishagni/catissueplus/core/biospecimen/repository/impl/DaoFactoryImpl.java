@@ -10,6 +10,7 @@ import com.krishagni.catissueplus.core.administrative.repository.DpRequirementDa
 import com.krishagni.catissueplus.core.administrative.repository.InstituteDao;
 import com.krishagni.catissueplus.core.administrative.repository.PermissibleValueDao;
 import com.krishagni.catissueplus.core.administrative.repository.PrintRuleDao;
+import com.krishagni.catissueplus.core.administrative.repository.PrintRuleSpecimenDao;
 import com.krishagni.catissueplus.core.administrative.repository.ScheduledJobDao;
 import com.krishagni.catissueplus.core.administrative.repository.ShipmentDao;
 import com.krishagni.catissueplus.core.administrative.repository.SiteDao;
@@ -23,6 +24,7 @@ import com.krishagni.catissueplus.core.administrative.repository.impl.DpRequirem
 import com.krishagni.catissueplus.core.administrative.repository.impl.InstituteDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.PermissibleValueDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.PrintRuleDaoImpl;
+import com.krishagni.catissueplus.core.administrative.repository.impl.PrintRuleSpecimenDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ScheduledJobDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ShipmentDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.SiteDaoImpl;
@@ -244,6 +246,13 @@ public class DaoFactoryImpl implements DaoFactory {
 	@Override
 	public PrintRuleDao getPrintRuleDao() {
 		PrintRuleDaoImpl dao = new PrintRuleDaoImpl();
+		setSessionFactory(dao);
+		return dao;
+	}
+
+	@Override
+	public PrintRuleSpecimenDao getPrintSpecimenRuleDao() {
+		PrintRuleSpecimenDaoImpl dao = new PrintRuleSpecimenDaoImpl();
 		setSessionFactory(dao);
 		return dao;
 	}

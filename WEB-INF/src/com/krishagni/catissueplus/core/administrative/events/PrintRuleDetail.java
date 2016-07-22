@@ -81,7 +81,9 @@ public class PrintRuleDetail {
 		this.labelType = labelType;
 	}
 
-	public String getLabelDesign() { return labelDesign;	}
+	public String getLabelDesign() {
+		return labelDesign;
+	}
 
 	public void setLabelDesign(String labelDesign) {
 		this.labelDesign = labelDesign;
@@ -103,7 +105,8 @@ public class PrintRuleDetail {
 		this.cmdFileFormat = cmdFileFormat;
 	}
 
-	public String getCmdFileDirectory() { return cmdFileDirectory;	}
+	public String getCmdFileDirectory() { return cmdFileDirectory;
+	}
 
 	public void setCmdFileDirectory(String cmdFileDirectory) {
 		this.cmdFileDirectory = cmdFileDirectory;

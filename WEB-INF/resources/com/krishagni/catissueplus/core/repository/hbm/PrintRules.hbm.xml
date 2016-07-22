@@ -42,4 +42,12 @@
     <filter name="activeEntity"/>
 
   </class>
+
+  <joined-subclass name="com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule" table="os_specimen_print_rules"
+                   extends="com.krishagni.catissueplus.core.administrative.domain.PrintRule">
+    <key column="RULE_ID"></key>
+      <property name="specimenClass" column="SPECIMEN_CLASS"></property>
+      <property name="specimenType" column="SPECIMEN_TYPE"></property>
+  </joined-subclass>
+
 </hibernate-mapping>

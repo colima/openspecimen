@@ -13,4 +13,13 @@ public interface PrintRuleService {
 	ResponseEvent<PrintRuleDetail> updatePrintRule(RequestEvent<PrintRuleDetail> req);
 
 	ResponseEvent<PrintRuleDetail> deletePrintRule(RequestEvent<Long> req);
+
+	@PlusTransactional
+	ResponseEvent<SpecimenPrintRuleDetail> createSpecimenPrintRule(RequestEvent<SpecimenPrintRuleDetail> req);
+
+	@PlusTransactional
+	ResponseEvent<SpecimenPrintRuleDetail> updateSpecimenPrintRule(RequestEvent<SpecimenPrintRuleDetail> req);
+
+	@PlusTransactional
+	ResponseEvent<SpecimenPrintRuleDetail> deleteSpecimenPrintRule(RequestEvent<Long> req);
 }

@@ -1,11 +1,11 @@
 
 package com.krishagni.catissueplus.core.administrative.services.impl;
-
-
 import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
+import com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleFactory;
 import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
+import com.krishagni.catissueplus.core.administrative.events.SpecimenPrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.services.PrintRuleService;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
@@ -72,6 +72,59 @@ class PrintRuleServiceImpl implements PrintRuleService {
 
 			existingRule.delete();
 			return ResponseEvent.response(PrintRuleDetail.from(existingRule));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<SpecimenPrintRuleDetail> createSpecimenPrintRule(RequestEvent<SpecimenPrintRuleDetail> req) {
+		SpecimenPrintRuleDetail detail = req.getPayload();
+		SpecimenPrintRule rule = printRuleFactory.createSpecimenPrintRule(detail);
+		daoFactory.getPrintSpecimenRuleDao().saveOrUpdate(rule);
+
+		return ResponseEvent.response(SpecimenPrintRuleDetail.from(rule));
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<SpecimenPrintRuleDetail> updateSpecimenPrintRule(RequestEvent<SpecimenPrintRuleDetail> req) {
+		try {
+			SpecimenPrintRuleDetail detail = req.getPayload();
+			SpecimenPrintRule existingRule = daoFactory.getPrintSpecimenRuleDao().getById(req.getPayload().getId());
+
+			if (existingRule == null) {
+				return ResponseEvent.userError(PrintRuleErrorCode.NOT_FOUND,req.getPayload().getId());
+			}
+
+			SpecimenPrintRule newRule = printRuleFactory.createSpecimenPrintRule(detail);
+
+			existingRule.update(newRule);
+			daoFactory.getPrintRuleDao().saveOrUpdate(existingRule);
+			return ResponseEvent.response(SpecimenPrintRuleDetail.from(existingRule));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception ex) {
+			return ResponseEvent.serverError(ex);
+		}
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<SpecimenPrintRuleDetail> deleteSpecimenPrintRule(RequestEvent<Long> req) {
+		try {
+			Long id = req.getPayload();
+			SpecimenPrintRule existingRule = daoFactory.getPrintSpecimenRuleDao().getById(id);
+
+			if (existingRule == null) {
+				return ResponseEvent.userError(PrintRuleErrorCode.NOT_FOUND,id);
+			}
+
+			existingRule.delete();
+			return ResponseEvent.response(SpecimenPrintRuleDetail.from(existingRule));
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {

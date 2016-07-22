@@ -6,12 +6,14 @@ import org.apache.commons.lang.StringUtils;
 
 import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
+import com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.User;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleFactory;
 import com.krishagni.catissueplus.core.administrative.domain.factory.SiteErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.UserErrorCode;
 import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
+import com.krishagni.catissueplus.core.administrative.events.SpecimenPrintRuleDetail;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
@@ -51,6 +53,41 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 		return rule;
 	}
 
+	@Override
+	public SpecimenPrintRule createSpecimenPrintRule(SpecimenPrintRuleDetail detail) {
+		SpecimenPrintRule rule =new SpecimenPrintRule();
+		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
+
+		setSite(detail, rule, ose);
+		setCollectionProtocol(detail, rule, ose);
+		setUser(detail, rule, ose);
+
+		rule.setIpRange(detail.getIpRange());
+		rule.setLabelType(detail.getLabelType());
+		rule.setLabelDesign(detail.getLabelDesign());
+		rule.setPrinterName(detail.getPrinterName());
+		rule.setCmdFileFormat(detail.getCmdFileFormat());
+
+		setCmdFileDirectory(detail, rule, ose);
+		setTokens(detail, rule, ose);
+		setActivityStatus(detail, rule, ose);
+
+		setSpecimenClass(detail, rule);
+		setSpecimenType(detail, rule);
+
+		ose.checkAndThrow();
+		return rule;
+	}
+
+	private void setSpecimenClass(SpecimenPrintRuleDetail detail, SpecimenPrintRule spmnPrintRule) {
+		spmnPrintRule.setSpecimenClass(detail.getSpecimenClass());
+	}
+
+
+	private void setSpecimenType(SpecimenPrintRuleDetail detail, SpecimenPrintRule spmnPrintRule) {
+		spmnPrintRule.setSpecimenType(detail.getSpecimenType());
+	}
+
 	private void setSite(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {
 		if (StringUtils.isBlank(detail.getSiteName())) {
 			return;
@@ -63,6 +100,7 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 		}
 
 		rule.setSite(site);
+
 	}
 
 	private void setCollectionProtocol(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
+import com.krishagni.catissueplus.core.administrative.events.SpecimenPrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.services.PrintRuleService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
@@ -50,6 +51,39 @@ public class PrintRuleController {
 	public PrintRuleDetail deleteVisitPrintRule(@PathVariable Long id) {
 		RequestEvent<Long> req = new RequestEvent<>(id);
 		ResponseEvent<PrintRuleDetail> resp  = printRuleSvc.deletePrintRule(req);
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/specimen")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public SpecimenPrintRuleDetail specimenPrintRule (@RequestBody SpecimenPrintRuleDetail detail) {
+		RequestEvent<SpecimenPrintRuleDetail> req = new RequestEvent<SpecimenPrintRuleDetail>(detail);
+		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.createSpecimenPrintRule(req);
+		resp.throwErrorIfUnsuccessful();
+
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/specimen/{id}")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public SpecimenPrintRuleDetail updateSpecimenPrintRule (@PathVariable Long id, @RequestBody SpecimenPrintRuleDetail detail) {
+		detail.setId(id);
+		RequestEvent<SpecimenPrintRuleDetail> req = new RequestEvent<SpecimenPrintRuleDetail>(detail);
+		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.updateSpecimenPrintRule(req);
+		resp.throwErrorIfUnsuccessful();
+
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "/specimen/{id}")
+	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
+	public SpecimenPrintRuleDetail deleteSpecimenPrintRule (@PathVariable Long id) {
+		RequestEvent<Long> req = new RequestEvent<>(id);
+		ResponseEvent<SpecimenPrintRuleDetail> resp  = printRuleSvc.deleteSpecimenPrintRule(req);
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}

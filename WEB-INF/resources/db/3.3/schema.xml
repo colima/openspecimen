@@ -285,5 +285,30 @@
       ordered="true"/>
   </changeSet>
 
+  <changeSet author="pjoshi" id="Print rule specimen table">
+    <createTable tableName="OS_SPECIMEN_PRINT_RULES">
+
+      <column name="RULE_ID" type="${int.type}">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="SPECIMEN_CLASS" type="${text.type}(32)">
+      </column>
+
+      <column name="SPECIMEN_TYPE" type="${text.type}(32)">
+      </column>
+
+    </createTable>
+  </changeSet>
+
+  <changeSet author="pjoshi" id="FK for specimen Table">
+    <addForeignKeyConstraint
+      constraintName="FK_SPECIMEN_LABEL_ID"
+      baseTableName="OS_SPECIMEN_PRINT_RULES"
+      baseColumnNames="RULE_ID"
+      referencedTableName="OS_PRINT_RULES"
+      referencedColumnNames="IDENTIFIER"/>
+  </changeSet>
+
 </databaseChangeLog>
 
