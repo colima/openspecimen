@@ -100,7 +100,6 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 		}
 
 		rule.setSite(site);
-
 	}
 
 	private void setCollectionProtocol(PrintRuleDetail detail, PrintRule rule, OpenSpecimenException ose) {

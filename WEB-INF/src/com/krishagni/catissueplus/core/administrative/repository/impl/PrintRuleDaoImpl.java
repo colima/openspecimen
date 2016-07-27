@@ -15,8 +15,8 @@ public class PrintRuleDaoImpl extends AbstractDao<PrintRule> implements PrintRul
 
 	public List<PrintRule> getRules() {
 		return getSessionFactory().getCurrentSession()
-				.getNamedQuery(GET_VISIT_PRINT_RULES)
-				.list();
+			.getNamedQuery(GET_VISIT_PRINT_RULES)
+			.list();
 	}
 
 	private static final String FQN = PrintRule.class.getName();
