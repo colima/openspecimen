@@ -1,5 +1,7 @@
 
 package com.krishagni.catissueplus.core.administrative.services.impl;
+import java.util.List;
+
 import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleErrorCode;
@@ -25,6 +27,14 @@ class PrintRuleServiceImpl implements PrintRuleService {
 
 	public void setPrintRuleFactory(PrintRuleFactory printRulesFactory) {
 		this.printRuleFactory = printRulesFactory;
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<List<PrintRuleDetail>> getRules() {
+		List<PrintRule> rules = daoFactory.getPrintRuleDao().getRules();
+
+		return ResponseEvent.response(PrintRuleDetail.from(rules));
 	}
 
 	@Override

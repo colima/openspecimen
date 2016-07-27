@@ -1,7 +1,10 @@
 
 package com.krishagni.catissueplus.core.administrative.events;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
@@ -154,5 +157,14 @@ public class PrintRuleDetail {
 		detail.setActivityStatus(rule.getActivityStatus());
 
 		return detail;
+	}
+
+	public static List<PrintRuleDetail> from(Collection<PrintRule> rules) {
+		List<PrintRuleDetail> result = new ArrayList<PrintRuleDetail>();
+		for (PrintRule rule: rules) {
+			result.add(from(rule));
+		}
+
+		return result;
 	}
 }

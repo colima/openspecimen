@@ -1,5 +1,7 @@
 package com.krishagni.catissueplus.rest.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,16 @@ public class PrintRuleController {
 
 	@Autowired
 	private PrintRuleService printRuleSvc;
+
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<PrintRuleDetail> getRules() {
+		ResponseEvent<List<PrintRuleDetail>> resp = printRuleSvc.getRules();
+		resp.throwErrorIfUnsuccessful();
+
+		return resp.getPayload();
+	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/visit")
 	@ResponseStatus(HttpStatus.OK)

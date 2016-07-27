@@ -41,6 +41,13 @@
 
     <filter name="activeEntity"/>
 
+    <query name="getVisitPrintRules">
+      from
+        com.krishagni.catissueplus.core.administrative.domain.PrintRule
+      where
+        activityStatus != 'Disabled'
+    </query>
+
   </class>
 
   <joined-subclass name="com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule" table="os_specimen_print_rules"
