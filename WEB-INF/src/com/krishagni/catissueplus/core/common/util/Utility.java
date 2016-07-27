@@ -29,7 +29,7 @@ import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -172,27 +172,47 @@ public class Utility {
 		return -1 * cal.get(Calendar.ZONE_OFFSET);		
 	}
 
-	public static void sendToClient(HttpServletResponse httpResp, String fileName, File file) {
-		sendToClient(httpResp, fileName, file, false);
+	public static void sendToClient(HttpServletResponse httpResp, String filename, File file) {
+		sendToClient(httpResp, filename, file, false);
 	}
 
-	public static void sendToClient(HttpServletResponse httpResp, String fileName, File file, boolean deleteOnSend) {
+	public static void sendToClient(HttpServletResponse httpResp, String filename, File file, boolean deleteOnSend) {
+		try {
+			sendToClient(httpResp, filename, getContentType(file), file);
+		} finally {
+			if (deleteOnSend && file != null) {
+				file.delete();
+			}
+		}
+	}
+
+	public static void sendToClient(HttpServletResponse httpResp, String filename, String contentType, File file) {
 		InputStream in = null;
 		try {
-			String fileType = getContentType(file);
-			httpResp.setContentType(fileType);
-			httpResp.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-	
 			in = new FileInputStream(file);
+			sendToClient(httpResp, filename, contentType, in);
+		} catch (IOException e) {
+			throw new RuntimeException("Error sending file", e);
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
+	}
+
+	public static void sendToClient(HttpServletResponse httpResp, String filename, String contentType, InputStream in) {
+		try {
+			if (StringUtils.isNotBlank(contentType)) {
+				httpResp.setContentType(contentType);
+			}
+
+			if (StringUtils.isNotBlank(filename)) {
+				httpResp.setHeader("Content-Disposition", "attachment;filename=" + filename);
+			}
+
 			IOUtils.copy(in, httpResp.getOutputStream());
 		} catch (IOException e) {
 			throw new RuntimeException("Error sending file", e);
 		} finally {
 			IOUtils.closeQuietly(in);
-
-			if (deleteOnSend && file != null) {
-				file.delete();
-			}
 		}
 	}
 	
@@ -231,6 +251,10 @@ public class Utility {
 	
 	public static String getDateString(Date date) {
 		return new SimpleDateFormat(ConfigUtil.getInstance().getDeDateFmt()).format(date);
+	}
+	
+	public static String getDateTimeString(Date date) {
+		return new SimpleDateFormat(ConfigUtil.getInstance().getDateTimeFmt()).format(date);
 	}
 
 	public static Date chopSeconds (Date date) {

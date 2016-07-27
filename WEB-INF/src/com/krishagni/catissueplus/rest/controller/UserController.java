@@ -51,8 +51,8 @@ public class UserController {
 			@RequestParam(value = "start", required = false, defaultValue = "0") 
 			int start,
 			
-			@RequestParam(value = "max", required = false, defaultValue = "100") 
-			int max,
+			@RequestParam(value = "maxResults", required = false, defaultValue = "100") 
+			int maxResults,
 			
 			@RequestParam(value = "searchString", required = false) 
 			String searchString,
@@ -66,6 +66,9 @@ public class UserController {
 			@RequestParam(value = "institute", required = false)
 			String institute,
 			
+			@RequestParam(value = "domainName", required = false)
+			String domainName,
+			
 			@RequestParam(value = "activityStatus", required = false)
 			String activityStatus,
 			
@@ -77,11 +80,12 @@ public class UserController {
 		
 		UserListCriteria crit = new UserListCriteria()
 			.startAt(start)
-			.maxResults(max)
+			.maxResults(maxResults)
 			.query(searchString)
 			.name(name)
 			.loginName(loginName)
 			.instituteName(institute)
+			.domainName(domainName)
 			.activityStatus(activityStatus)
 			.listAll(listAll)
 			.includeStat(includeStats);
@@ -110,6 +114,9 @@ public class UserController {
 			@RequestParam(value = "institute", required = false)
 			String institute,
 			
+			@RequestParam(value = "domainName", required = false)
+			String domainName,
+			
 			@RequestParam(value = "activityStatus", required = false)
 			String activityStatus,
 			
@@ -121,6 +128,7 @@ public class UserController {
 			.name(name)
 			.loginName(loginName)
 			.instituteName(institute)
+			.domainName(domainName)
 			.activityStatus(activityStatus)
 			.listAll(listAll);
 		

@@ -18,16 +18,20 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.User;
@@ -71,6 +75,7 @@ import com.krishagni.catissueplus.core.biospecimen.repository.CpListCriteria;
 import com.krishagni.catissueplus.core.biospecimen.repository.CprListCriteria;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.biospecimen.services.CollectionProtocolService;
+import com.krishagni.catissueplus.core.common.Pair;
 import com.krishagni.catissueplus.core.common.PlusTransactional;
 import com.krishagni.catissueplus.core.common.access.AccessCtrlMgr;
 import com.krishagni.catissueplus.core.common.access.AccessCtrlMgr.ParticipantReadAccess;
@@ -81,17 +86,23 @@ import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
 import com.krishagni.catissueplus.core.common.events.EntityDeleteResp;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
+import com.krishagni.catissueplus.core.common.service.ConfigChangeListener;
+import com.krishagni.catissueplus.core.common.service.ConfigurationService;
 import com.krishagni.catissueplus.core.common.service.EmailService;
 import com.krishagni.catissueplus.core.common.service.ObjectStateParamsResolver;
 import com.krishagni.catissueplus.core.common.util.AuthUtil;
 import com.krishagni.catissueplus.core.common.util.ConfigUtil;
 import com.krishagni.catissueplus.core.common.util.MessageUtil;
 import com.krishagni.catissueplus.core.common.util.Utility;
+import com.krishagni.catissueplus.core.query.Column;
+import com.krishagni.catissueplus.core.query.ListConfig;
+import com.krishagni.catissueplus.core.query.ListDetail;
+import com.krishagni.catissueplus.core.query.ListGenerator;
 import com.krishagni.rbac.common.errors.RbacErrorCode;
 import com.krishagni.rbac.service.RbacService;
 
 
-public class CollectionProtocolServiceImpl implements CollectionProtocolService, ObjectStateParamsResolver {
+public class CollectionProtocolServiceImpl implements CollectionProtocolService, ObjectStateParamsResolver, InitializingBean {
 
 	private ThreadPoolTaskExecutor taskExecutor;
 
@@ -106,6 +117,14 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 	private RbacService rbacSvc;
 	
 	private EmailService emailService;
+
+	private ListGenerator listGenerator;
+
+	private ConfigurationService cfgSvc;
+
+	private CpWorkflowConfig sysWorkflows;
+
+	private Map<String, Function<Map<String, Object>, ListConfig>> listConfigFns = new HashMap<>();
 	
 	public void setTaskExecutor(ThreadPoolTaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
@@ -133,6 +152,19 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 
 	public void setEmailService(EmailService emailService) {
 		this.emailService = emailService;
+	}
+
+	public void setListGenerator(ListGenerator listGenerator) {
+		this.listGenerator = listGenerator;
+	}
+
+	public void setCfgSvc(ConfigurationService cfgSvc) {
+		this.cfgSvc = cfgSvc;
+	}
+
+	public CollectionProtocolServiceImpl() {
+		listConfigFns.put("participant-list-view", this::getParticipantsListConfig);
+		listConfigFns.put("specimen-list-view", this::getSpecimenListConfig);
 	}
 
 	@Override
@@ -918,21 +950,21 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 			if (cp == null) {
 				return ResponseEvent.userError(CpErrorCode.NOT_FOUND);
 			}
-			
+
 			AccessCtrlMgr.getInstance().ensureUpdateCpRights(cp);
 			CpWorkflowConfig cfg = daoFactory.getCollectionProtocolDao().getCpWorkflows(input.getCpId());
 			if (cfg == null) {
 				cfg = new CpWorkflowConfig();
 				cfg.setCp(cp);
 			}
-			
+
 			cfg.getWorkflows().clear();
 			for (WorkflowDetail detail : input.getWorkflows().values()) {
 				Workflow wf = new Workflow();
 				BeanUtils.copyProperties(detail, wf);
 				cfg.getWorkflows().put(wf.getName(), wf);
 			}
-			
+
 			daoFactory.getCollectionProtocolDao().saveCpWorkflows(cfg);
 			return ResponseEvent.response(CpWorkflowCfgDetail.from(cfg));
 		} catch (Exception e) {
@@ -963,6 +995,77 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		}
 	}
 
+	@Override
+	@PlusTransactional
+	public ResponseEvent<ListConfig> getCpListCfg(RequestEvent<Map<String, Object>> req) {
+		try {
+			Map<String, Object> input = req.getPayload();
+			String listName = (String)input.get("listName");
+
+			ListConfig cfg = getListConfig(input, listName, null);
+			if (cfg == null) {
+				//
+				// TODO: return appropriate error code
+				//
+				return ResponseEvent.response(null);
+			}
+
+			cfg.setFilters(listGenerator.getFilters(cfg));
+			return ResponseEvent.response(cfg);
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<ListDetail> getList(RequestEvent<Map<String, Object>> req) {
+		try {
+			Map<String, Object> listReq = req.getPayload();
+			String listName = (String)listReq.get("listName");
+			Function<Map<String, Object>, ListConfig> configFn = listConfigFns.get(listName);
+			if (configFn == null) {
+				return ResponseEvent.response(null);
+			}
+
+			ListConfig cfg = configFn.apply(listReq);
+			if (cfg == null) {
+				return ResponseEvent.response(null);
+			}
+
+			return ResponseEvent.response(listGenerator.getList(cfg, (List<Column>)listReq.get("filters")));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
+
+	@Override
+	@PlusTransactional
+	public ResponseEvent<Integer> getListSize(RequestEvent<Map<String, Object>> req) {
+		try {
+			Map<String, Object> listReq = req.getPayload();
+			String listName = (String)listReq.get("listName");
+			Function<Map<String, Object>, ListConfig> configFn = listConfigFns.get(listName);
+			if (configFn == null) {
+				return ResponseEvent.response(null);
+			}
+
+			ListConfig cfg = configFn.apply(listReq);
+			if (cfg == null) {
+				return ResponseEvent.response(null);
+			}
+
+			return ResponseEvent.response(listGenerator.getListSize(cfg, (List<Column>)listReq.get("filters")));
+		} catch (OpenSpecimenException ose) {
+			return ResponseEvent.error(ose);
+		} catch (Exception e) {
+			return ResponseEvent.serverError(e);
+		}
+	}
 
 	@Override
 	public String getObjectName() {
@@ -977,6 +1080,18 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		}
 
 		return daoFactory.getCollectionProtocolDao().getCpIds(key, value);
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		cfgSvc.registerChangeListener(ConfigParams.MODULE, new ConfigChangeListener() {
+			@Override
+			public void onConfigChange(String name, String value) {
+				if (StringUtils.isBlank(name) || name.equals(ConfigParams.SYS_WORKFLOWS)) {
+					sysWorkflows = null;
+				}
+			}
+		});
 	}
 
 	private CpListCriteria addCpListCriteria(CpListCriteria crit) {
@@ -1506,6 +1621,165 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService,
 		String dir = ConfigUtil.getInstance().getStrSetting(ConfigParams.MODULE, ConfigParams.CP_SOP_DOCS_DIR, defDir);
 		new File(dir).mkdirs();
 		return dir + File.separator;
+	}
+
+	private ListConfig getSpecimenListConfig(Map<String, Object> listReq) {
+		ListConfig cfg = getListConfig(listReq, "specimen-list-view", "Specimen");
+		if (cfg == null) {
+			return null;
+		}
+
+		Column id = new Column();
+		id.setExpr("Specimen.id");
+		id.setCaption("specimenId");
+		cfg.setPrimaryColumn(id);
+
+		Column type = new Column();
+		type.setExpr("Specimen.type");
+		type.setCaption("specimenType");
+
+		Column specimenClass = new Column();
+		specimenClass.setExpr("Specimen.class");
+		specimenClass.setCaption("specimenClass");
+
+		List<Column> hiddenColumns = new ArrayList<>();
+		hiddenColumns.add(id);
+		hiddenColumns.add(type);
+		hiddenColumns.add(specimenClass);
+		cfg.setHiddenColumns(hiddenColumns);
+
+		Long cpId = (Long)listReq.get("cpId");
+		List<Pair<Long, Long>> siteCps = AccessCtrlMgr.getInstance().getReadAccessSpecimenSiteCps(cpId);
+		if (siteCps == null) {
+			//
+			// Admin; hence no additional restrictions
+			//
+			return cfg;
+		}
+
+		if (siteCps.isEmpty()) {
+			throw OpenSpecimenException.userError(RbacErrorCode.ACCESS_DENIED);
+		}
+
+		Set<Long> siteIds = siteCps.stream().map(siteCp -> siteCp.first()).collect(Collectors.toSet());
+		cfg.setRestriction(getListRestriction(siteIds));
+		cfg.setDistinct(true);
+		return cfg;
+	}
+
+	private ListConfig getParticipantsListConfig(Map<String, Object> listReq) {
+		ListConfig cfg = getListConfig(listReq, "participant-list-view", "Participant");
+		if (cfg == null) {
+			return null;
+		}
+
+		Column id = new Column();
+		id.setExpr("Participant.id");
+		id.setCaption("cprId");
+		cfg.setPrimaryColumn(id);
+		cfg.setHiddenColumns(Collections.singletonList(id));
+
+		Long cpId = (Long)listReq.get("cpId");
+		ParticipantReadAccess access = AccessCtrlMgr.getInstance().getParticipantReadAccess(cpId);
+		if (access.admin) {
+			return cfg;
+		}
+
+		if (access.siteCps == null || access.siteCps.isEmpty()) {
+			throw OpenSpecimenException.userError(RbacErrorCode.ACCESS_DENIED);
+		}
+
+		Set<Long> siteIds = new HashSet<>();
+		for (Pair<Set<Long>, Long> siteCp : access.siteCps) {
+			siteIds.addAll(siteCp.first());
+		}
+
+		cfg.setRestriction(getListRestriction(siteIds));
+		cfg.setDistinct(true);
+		return cfg;
+	}
+
+	private String getListRestriction(Collection<Long> siteIds) {
+		StringBuilder restriction = new StringBuilder();
+
+		String siteIdsStr = siteIds.stream().map(siteId -> siteId.toString()).collect(Collectors.joining(", "));
+		if (AccessCtrlMgr.getInstance().isAccessRestrictedBasedOnMrn()) {
+			restriction.append("(").append("(Participant.medicalRecord.mrnSiteId exists")
+				.append(" and Participant.medicalRecord.mrnSiteId in (").append(siteIdsStr)
+				.append(")) or (Participant.medicalRecord.mrnSiteId not exists ")
+				.append(" and CollectionProtocol.cpSites.siteId in (").append(siteIdsStr).append(")))");
+		} else {
+			restriction.append("(CollectionProtocol.cpSites.siteId in (").append(siteIdsStr).append("))");
+		}
+
+		return restriction.insert(0, "(").append(")").toString();
+	}
+
+	private ListConfig getListConfig(Map<String, Object> listReq, String listName, String drivingForm) {
+		Long cpId = (Long)listReq.get("cpId");
+		Workflow workflow = getWorkFlow(cpId, listName);
+		if (workflow == null) {
+			return null;
+		}
+
+		ListConfig listCfg = new ObjectMapper().convertValue(workflow.getData(), ListConfig.class);
+		listCfg.setCpId(cpId);
+		listCfg.setDrivingForm(drivingForm);
+		setListLimit(listReq, listCfg);
+
+		Boolean includeCount = (Boolean)listReq.get("includeCount");
+		listCfg.setIncludeCount(includeCount == null ? false : includeCount);
+		return listCfg;
+	}
+
+	private Workflow getWorkFlow(Long cpId, String name) {
+		Workflow workflow = null;
+
+		CpWorkflowConfig cfg = daoFactory.getCollectionProtocolDao().getCpWorkflows(cpId);
+		if (cfg != null) {
+			workflow = cfg.getWorkflows().get(name);
+		}
+
+		if (workflow == null) {
+			workflow = getSysWorkflow(name);
+		}
+
+		return workflow;
+	}
+
+	private Workflow getSysWorkflow(String name) {
+		return getSysWorkflows().getWorkflows().get(name);
+	}
+
+	private CpWorkflowConfig getSysWorkflows() {
+		if (sysWorkflows == null) {
+			synchronized (this) {
+				if (sysWorkflows == null) {
+					String config = ConfigUtil.getInstance().getFileContent(ConfigParams.MODULE, ConfigParams.SYS_WORKFLOWS, null);
+					sysWorkflows = new CpWorkflowConfig();
+					if (StringUtils.isNotBlank(config)) {
+						sysWorkflows.setWorkflowsJson(config);
+					}
+				}
+			}
+		}
+
+		return sysWorkflows;
+	}
+
+	private void setListLimit(Map<String, Object> listReq, ListConfig cfg) {
+		Integer startAt = (Integer)listReq.get("startAt");
+		if (startAt == null) {
+			startAt = 0;
+		}
+
+		Integer maxResults = (Integer)listReq.get("maxResults");
+		if (maxResults == null) {
+			maxResults = 100;
+		}
+
+		cfg.setStartAt(startAt);
+		cfg.setMaxResults(maxResults);
 	}
 
 	private static final String PPID_MSG                     = "cp_ppid";

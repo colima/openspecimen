@@ -10,6 +10,12 @@
   </changeSet>
 
   <changeSet author="vlonushte" id="Drop unique constraint on login name to add same on (login name, domain)" dbms="oracle">
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="1">
+        select count(*) from user_constraints where table_name='CATISSUE_USER' and constraint_name='SYS_C00107630';
+      </sqlCheck>
+    </preConditions>
+
     <dropUniqueConstraint
       tableName="CATISSUE_USER"
       constraintName="SYS_C00107630"
@@ -21,6 +27,21 @@
       constraintName="CAT_USER_LNAME_DOMAIN_UQ"
       tableName="CATISSUE_USER"
       columnNames="LOGIN_NAME, DOMAIN_NAME"/>
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="Remove unique constraint to allow duplicate specimen label" dbms="mysql">
+    <dropUniqueConstraint tableName="CATISSUE_SPECIMEN" constraintName="LABEL"/>
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="Remove unique constraint to allow duplicate specimen label" dbms="oracle">
+    <dropUniqueConstraint tableName="CATISSUE_SPECIMEN" constraintName="SYS_C00107672"/>
+  </changeSet>
+
+  <changeSet author="ckhilosiya" id="Add index for faster lookup on specimen label">
+    <!-- Removal of unique constraint forces us to have an explicit index on specimen label -->
+    <createIndex indexName="CATISSUE_SPECIMEN_LABEL_IDX" tableName="CATISSUE_SPECIMEN">
+      <column name="LABEL"></column>
+    </createIndex>
   </changeSet>
 
   <changeSet author="vlonushte" id="Collection protocol SOP document and URL">
@@ -214,8 +235,157 @@
     <customChange class="com.krishagni.catissueplus.core.upgrade.MoveSpecimenUnitsToPvProps"></customChange>
   </changeSet>
 
+  <changeSet author="vgaikwad" id="Before migration remove all abbreviation properties">
+    <sql>
+      delete from os_pv_props where name='abbreviation';
+    </sql>
+  </changeSet>
+
+  <changeSet author="vgaikwad" id="Move specimen type and pathology status abbreviations from csv to PV properties">
+    <customChange class="com.krishagni.catissueplus.core.upgrade.MoveAbbreviationsToPvProps"></customChange>
+  </changeSet>
+
   <changeSet author="vpawar" id="Drop specimen units as units are stored as PV properties">
     <dropTable tableName="OS_SPECIMEN_UNITS"/>
+  </changeSet>
+
+  <changeSet author="nmarwaha" id="Drop foreign key constraint from institution_id column in catissue_user table">
+    <preConditions onFail="MARK_RAN">
+      <foreignKeyConstraintExists foreignKeyName="FKB025CFC71792AD22"/>
+    </preConditions>
+    
+    <dropForeignKeyConstraint baseTableName="CATISSUE_USER" constraintName="FKB025CFC71792AD22"/>
+  </changeSet>
+  
+  
+  <changeSet author="nmarwaha" id="Drop institution_id column from catissue_user table">
+    <preConditions onFail="MARK_RAN">
+      <columnExists columnName="INSTITUTION_ID" tableName="CATISSUE_USER"/>
+    </preConditions>
+
+    <dropColumn
+      columnName="INSTITUTION_ID"
+      tableName="CATISSUE_USER"/>
+  </changeSet>
+  
+  <changeSet author="nmarwaha" id="Added institute_id column in catissue_user table">
+    <addColumn tableName="CATISSUE_USER">
+      <column name="INSTITUTE_ID" type="${int.type}"/>
+    </addColumn>
+  </changeSet>
+  
+  <changeSet author="nmarwaha" id="FK on institute id of user table">
+    <addForeignKeyConstraint
+      constraintName="FK_USER_INSTITUTE_ID"
+      baseTableName="CATISSUE_USER"
+      baseColumnNames="INSTITUTE_ID"
+      referencedTableName="CATISSUE_INSTITUTION"
+      referencedColumnNames="IDENTIFIER" />
+  </changeSet>
+  
+  <changeSet author="nmarwaha" id="Migrate the user's institute id from respective department" dbms="mysql">
+    <sql>
+      update 
+        catissue_user usr 
+        inner join os_departments dept on dept.identifier = usr.department_id
+        inner join catissue_institution inst on inst.identifier = dept.institute_id
+      set 
+        usr.institute_id = inst.identifier
+    </sql>
+  </changeSet>
+  
+  <changeSet author="nmarwaha" id="Migrate the user's institute id from respective department" dbms="oracle">
+    <sql>
+      merge into catissue_user usr using (
+        select 
+          u.identifier as user_id, inst.identifier as inst_id
+        from 
+          catissue_user u
+          inner join os_departments dept on dept.identifier = u.department_id
+          inner join catissue_institution inst on inst.identifier = dept.institute_id
+      ) t on (usr.identifier = t.user_id) 
+      when matched then update set usr.institute_id = t.inst_id
+    </sql>
+  </changeSet>
+  
+  <changeSet author="nmarwaha" id="Updated user view" runOnChange="true">
+    <sql>
+      create or replace view USER_VIEW as (
+        select
+          u.identifier as identifier, u.first_name as first_name, u.last_name as last_name,
+          u.email_address as email_address,
+          concat(u.first_name, concat(' ', u.last_name)) as name,
+          i.name as institute_name
+        from
+          catissue_user u
+          inner join catissue_institution i on u.institute_id = i.identifier
+      )
+    </sql>
+  </changeSet>
+  
+  <changeSet author="nmarwaha" id="Updated the CP coordinator view" runOnChange="true">
+    <sql>
+      create or replace view cp_coord_view as (
+        select 
+          u.identifier as identifier, u.first_name as first_name, u.last_name as last_name,
+          u.email_address as email_address, cpcrd.collection_protocol_id as cp_id, i.name as institute_name
+        from 
+          catissue_coll_coordinators cpcrd 
+          join catissue_user u on cpcrd.user_id = u.identifier 
+          join catissue_institution i on i.identifier = u.institute_id
+      )
+    </sql>
+  </changeSet>
+
+  <changeSet author="slakhani" id="Stored procedure to create indices on foreign keys" dbms="oracle">
+    <sql endDelimiter="//">
+      create or replace procedure create_index_on_fk as
+        cnt number := 0;
+        index_name varchar2(128);
+      begin
+        declare column_already_indexed exception;
+
+        pragma exception_init(column_already_indexed, -1408); -- ora-01408
+
+        begin
+          for uc in (
+            select
+              cons.table_name as table_name, cols.column_name as column_name
+            from
+              user_constraints cons
+              left join user_cons_columns cols on cols.constraint_name = cons.constraint_name
+            where
+              cons.constraint_type = 'R'
+          )
+
+          loop
+            index_name := uc.column_name;
+            if length(index_name) > 20 then
+              index_name := substr(index_name, 0, 20);
+            end if;
+
+            index_name := index_name || cnt || '_idx';
+            begin
+              execute immediate 'create index ' || index_name || ' on ' || uc.table_name || '(' || uc.column_name || ')';
+            exception
+              when column_already_indexed then
+                continue;
+            end;
+
+            cnt:=cnt+1;
+          end loop;
+        end;
+      end;
+      //
+    </sql>
+  </changeSet>
+
+  <changeSet author="slakhani" id="Creating indices on foreign keys" dbms="oracle">
+    <sql>call create_index_on_fk()</sql>
+  </changeSet>
+
+  <changeSet author="vlonushte" id="Drop available column from specimen table as it is no longer used">
+    <dropColumn tableName="CATISSUE_SPECIMEN" columnName="AVAILABLE"/>
   </changeSet>
 
   <changeSet author="pjoshi" id="Print rules table">
@@ -297,7 +467,6 @@
 
       <column name="SPECIMEN_TYPE" type="${text.type}(32)">
       </column>
-
     </createTable>
   </changeSet>
 
@@ -311,4 +480,3 @@
   </changeSet>
 
 </databaseChangeLog>
-

@@ -1,23 +1,25 @@
 <div>
   <div os-page-header>
-    <ul os-breadcrumbs>
-      <li>
-        <a ui-sref="shipment-list" translate="shipments.list">Shipments</a>
-      </li>
-    </ul>
-    <h3 ng-switch on="!shipment.id">
-      <span ng-switch-when="true" translate="shipments.create_shipment">Create Shipment</span>
-      <span ng-switch-default>{{shipment.name}}</span>
-    </h3>
+    <div class="os-page-header-content">
+      <ul os-breadcrumbs>
+        <li>
+          <a ui-sref="shipment-list" translate="shipments.list">Shipments</a>
+        </li>
+      </ul>
+      <h3 ng-switch on="!shipment.id">
+        <span ng-switch-when="true" translate="shipments.create_shipment">Create Shipment</span>
+        <span ng-switch-default>{{shipment.name}}</span>
+      </h3>
+    </div>
   </div>
   
   <div class="container">
     <div os-wizard="shipWizard" type="classic">
-      <os-wizard-step title="{{'shipments.details' | translate}}" on-finish="passThrough">
+      <os-wizard-step title="{{'shipments.details' | translate}}" on-finish="passThrough()">
         <div ng-include src="'shipment/addedit-detail.html'"></div>
       </os-wizard-step>
 
-      <os-wizard-step title="{{'shipments.specimens' | translate}}" on-finish="passThrough">
+      <os-wizard-step title="{{'shipments.specimens' | translate}}" on-finish="passThrough()">
         <div ng-include src="'shipment/addedit-shipping-specimens.html'"></div>
       </os-wizard-step>
     </div>
@@ -204,8 +206,8 @@
     </div>
 
     <os-add-items ng-if="!shipment.request && shipment.status != 'Shipped'" 
-      item-list="shipment.shipmentItems" item-key="specimen.label"
-      on-add="addSpecimens(itemLabels)" placeholder="{{'shipments.enter_specimen_label' | translate}}">
+      item-list="shipment.shipmentItems" on-add="addSpecimens(itemLabels)"
+      placeholder="{{'shipments.enter_specimen_label' | translate}}">
     </os-add-items>
 
     <table class="os-table os-dist-spmns-table bulk-edit os-border os-table-muted-hdr"
@@ -272,8 +274,7 @@
             <span>{{specimen.cpShortTitle}}</span>
           </td>
           <td class="col">
-            <span>{{specimen.availableQty}}</span>
-            <os-specimen-unit specimen-class="specimen.specimenClass" type="specimen.type"> </os-specimen-unit>
+            <os-spmn-measure-val specimen="specimen" value="specimen.availableQty"></os-spmn-measure-val>
           </td>
           <td class="col" ng-if="shipment.status != 'Shipped'"> 
             <span ng-switch on="!!specimen.storageLocation.name">

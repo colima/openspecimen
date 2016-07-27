@@ -1,23 +1,27 @@
 <div>
   <div os-page-header>
-    <ul os-breadcrumbs>
-      <li>
-        <a ui-sref="order-list" translate="orders.list">Distribution Orders</a>
-      </li>
-    </ul>
-    <h3 ng-switch on="!order.id">
-      <span ng-switch-when="true" translate="orders.create_order">Create Distribution Order</span>
-      <span ng-switch-default>{{order.name}}</span>
-    </h3>
+    <div class="os-page-header-content">
+      <ul os-breadcrumbs>
+        <li>
+          <a ui-sref="order-list">
+            <span translate="orders.list">Distribution Orders</span>
+          </a>
+        </li>
+      </ul>
+      <h3 ng-switch on="!order.id">
+        <span ng-switch-when="true" translate="orders.create_order">Create Distribution Order</span>
+        <span ng-switch-default>{{order.name}}</span>
+      </h3>
+    </div>
   </div>
   
   <div class="container">
     <div os-wizard="doWizard" type="classic">
-      <os-wizard-step title="{{'orders.details' | translate}}" on-finish="passThrough">
+      <os-wizard-step title="{{'orders.details' | translate}}" on-finish="passThrough()">
         <div ng-include src="'orders/addedit-detail.html'"></div>
       </os-wizard-step>
 
-      <os-wizard-step title="{{'orders.specimens' | translate}}" on-finish="passThrough">
+      <os-wizard-step title="{{'orders.specimens' | translate}}" on-finish="areItemQuantitiesValid(doWizard)">
         <div ng-include src="'orders/addedit-order-specimens.html'"></div>
       </os-wizard-step>
 
@@ -155,7 +159,7 @@
     </div>
 
     <span ng-if="!order.request">
-      <os-add-items item-list="order.orderItems" item-key="specimen.label" on-add="addSpecimens(itemLabels)"
+      <os-add-items item-list="order.orderItems" on-add="addSpecimens(itemLabels)"
         placeholder="{{'orders.enter_specimen_label' | translate}}">
       </os-add-items>
     </span>
@@ -236,14 +240,12 @@
             </span>
           </td>
           <td class="col">
-            <span> {{specimen.availableQty}} </span>
-            <os-specimen-unit specimen-class="specimen.specimenClass" type="specimen.type"></os-specimen-unit>
+            <os-spmn-measure-val specimen="specimen" value="specimen.availableQty"></os-spmn-measure-val>
           </td>
           <td class="col">
             <div class="os-input-addon-grp">
               <input type="text" os-md-input name="qty" ng-model="item.quantity" required 
                 os-ensure-range="[
-                  {tgt: specimen.availableQty, cmp: 'le', errorKey: 'distQtyGtAvailableQty'},
                   {tgt: 0, cmp: 'gt', errorKey: 'distQtyLeZero'}
                 ]" 
                 ng-model-options="{allowInvalid: 'true'}" ng-change="setStatus(item)">

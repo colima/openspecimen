@@ -23,8 +23,6 @@
 
     <property name="label" column="LABEL" />
 
-    <property name="isAvailable" column="AVAILABLE" />
-
     <property name="comment" column="COMMENTS" />
 
     <property name="activityStatus" column="ACTIVITY_STATUS" />
@@ -100,6 +98,19 @@
         com.krishagni.catissueplus.core.biospecimen.domain.Specimen s
       where
         s.label = :label
+    </query>
+
+    <query name="getByLabelAndCp">
+      select
+        s
+      from
+        com.krishagni.catissueplus.core.biospecimen.domain.Specimen s
+        join s.visit v
+        join v.registration reg
+        join reg.collectionProtocol cp
+      where
+        s.label = :label and
+        cp.shortTitle = :cpShortTitle
     </query>
 
     <query name="getByVisitAndReq">
@@ -185,6 +196,19 @@
         sp.id in (:specimenIds)
       group by
         sp.id
+    </query>
+
+    <query name="getDuplicateLabelCount">
+      select
+        count(id)
+      from
+        com.krishagni.catissueplus.core.biospecimen.domain.Specimen
+      where
+        label is not null
+      group by
+        label
+      having
+        count(id) > 1
     </query>
   </class>
 </hibernate-mapping>

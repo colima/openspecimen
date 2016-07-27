@@ -45,6 +45,7 @@
     "yes": "Yes",
     "no": "No",
     "none": "None",
+    "warning": "Warning",
     "form_validation_error": "There are validation errors as highlighted below. Please correct them",
     "server_error": "Internal Server Error. Please report this problem to system administrator",
     "ui_error": "UI Error. Please report this problem to system administrator",
@@ -66,6 +67,12 @@
     "close_reason": "Reason for closing",
     "confirm_navigation": " You've unsaved form changes. If you navigate away from this page without submitting form, the changes will be lost. Are you sure you want to leave this page?",
     "footer_note": "<a href=\"http://www.openspecimen.org\" target=\"_blank\">OpenSpecimen</a> - powered by <a href=\"http://www.krishagni.com\" target=\"_blank\">Krishagni</a>",
+
+    "filters": {
+      "title": "Filters",
+      "min": "Min. {{caption}}",
+      "max": "Max. {{caption}}"
+    },
 
     "buttons": {
       "add": "Add",
@@ -150,7 +157,7 @@
     "sop_document": "SOP Document",
     "sop_document_url": "SOP Document URL",
     "sop_document_file": "SOP Document File",
-    "download_sop": "Download SOP",
+    "view_sop": "View SOP",
     "desc_url": "Description URL",
     "specimen_label_fmt": "Specimen Label Format",
     "derivative_label_fmt": "Derivative Label Format",
@@ -165,6 +172,7 @@
     "participant_count": "Participants",
     "specimen_count": "Specimens",
     "view_details": "View Details",
+    "view_participants": "View Participants",
     "view_list": "View List",
     "view_catalog": "View Catalog",
     "disable_pre_print_warning": "Turning off pre-printing at collection protocol level will turn it off for all specimen requirements too",
@@ -306,7 +314,7 @@
     "spmn_label_or_barcode": "Specimen Label / Barcode",
     "collection_protocol": "Collection Protocol",
     "regDate": "Registration Date",
-    "reg_another_protocol": "Register to Another Protocol",
+    "reg_another_protocol": "Add to Another Protocol",
     "confirm_merging": "Merging Participant",
     "confirm_merge": "Participant being updated will be deleted forever. Do you want to continue with merge?",
     "search_results": "Participant Search Result for {{key}}",
@@ -339,7 +347,7 @@
     "other_cps": "Other Protocols",
     
     "buttons": {
-      "register": "Register",
+      "register": "Add Participant",
       "update_registration": "Update",
       "register_selected_participant": "Register Selected Participant",
       "merge_participants": "Merge Participants",
@@ -482,6 +490,7 @@
     "container": "Container",
     "biohazards": "Biohazards",
     "created_on": "Created On",
+    "cp": "Collection Protocol",
     "concentration_unit": "&#181;g/&#181;l",
     "copy_first_to_all": "Copy first to all",
     "row": "Row",
@@ -492,8 +501,10 @@
     "activity_info": "{{name}} created",
     "activity_status": "Activity Status",
     "location" : "Location",
+    "search_results": "Specimen Search Result for {{key}}",
     "print": "Print",
     "close_parent": "Close Parent",
+    "ops": "Specimen Actions",
 
     "reason_for_closing": "Reason for closing",
 
@@ -533,6 +544,12 @@
     "create_derivatives": "Create Derived Specimens",
     "specimen_type": "Specimen Type",
     "anatomic_site": "Anatomic Site",
+
+    "multiple_cp_specimens": "Specimen labels with multiple protocols",
+    "select_protocol": "Following specimen labels are present in multiple protocols. Please select the right protocol before proceeding",
+    "specimen_not_found": "Specimen {{label}} does not exist",
+    "hide_pending":"Hide Pending",
+    "show_pending": "Show Pending",
 
     "col_event": {
       "title": "Collection Details",
@@ -577,8 +594,7 @@
 
     "errors": {
       "duplicate_labels": "One or more specimens using same label",
-      "insufficient_qty": "Insufficient parent specimen quantity to create aliquots",
-      "insufficient_parent_qty": "Insufficient parent specimen {{label}} quantity to create child specimens",
+      "insufficient_qty": "Total quantity of aliquots is more than the parent's quantity. Do you want to proceed?",
       "created_on_lt_parent": "Created on time of specimen less than that of parent specimen",
       "created_on_gt_curr_time": "Created on time of specimen greater than current time",
       "children_created_on_lt_parent": "Created on time of children less than that of parent specimen {{parentLabel}}",
@@ -598,7 +614,6 @@
       "enter_specimen_label": "To add specimens to list, enter labels separated by a comma, tab or newline and click add",
       "details": "Event Details",
       "copy_first_to_all": "Copy First To All",
-      "specimens_not_found_or_no_access": "One or more specimens could not be loaded either because they do not exists or you do not have sufficient rights to access them",
       "events_saved": "Event saved successfully"
     }
   },
@@ -675,9 +690,6 @@
     "create_institute": "Create Institute",
     "update_institute": "Update Institute",
     "name": "Name",
-    "department_name": "Department Name",
-    "departments": "Departments",
-    "depts_count": "Departments",
     "users_count": "Users",
 
     "bulk_import": "Import Institutes",
@@ -687,7 +699,6 @@
       "view_details": "Click to view Institute details",
       "add": "Click to add new Institute",
       "edit": "Click to edit institute",
-      "department_count": "Count of Departments",
       "user_count": "Count of Users in Institute",
       "search": "Click to search Institutes"
     },
@@ -830,7 +841,6 @@
     "email_address": "Email Address",
     "phone_number": "Phone Number",
     "institute": "Institute",
-    "department": "Department",
     "address": "Address",
     "super_admin": "Super Administrator",
     "manage_forms": "Manage Forms?",
@@ -1530,7 +1540,6 @@
     "details": "Order Details",
     "no_specimens_in_list": "No specimens in order list to distribute. Add at least one specimen",
     "enter_specimen_label": "To add specimens to distribution list, enter labels separated by a comma, tab or newline and click add",
-    "specimens_not_found_or_no_access": "One or more specimens could not be loaded either because they do not exists or you do not have sufficient rights to access them",
 
     "report_gen_initiated": "Generating distribution order report...",
     "downloading_report": "Downloading distribution order report...",
@@ -1585,6 +1594,10 @@
     "tooltip": {
       "create": "Create new distribution order",
       "search": "Filter out distribution orders"
+    },
+
+    "errors": {
+      "insufficient_qty": "The distribution quantity of {{count}} {{ count == 1 ? 'specimen' : 'specimens' }} is more than the available quantity. Do you want to proceed?"
     }
   },
 
@@ -1612,7 +1625,6 @@
     "details": "Shipment Details",
     "no_specimens_in_list": "No specimens in shipment. Add at least one specimen",
     "enter_specimen_label": "To add specimens to shipment, enter labels separated by a comma, tab or newline and click add",
-    "specimens_not_found_or_no_access": "One or more specimens could not be loaded either because they do not exists or you do not have sufficient rights to access them",
 
     "filters": "Filters",
     "report_gen_initiated": "Generating shipment report...",
@@ -1814,12 +1826,18 @@
         "cp_expiry_rem_notif_desc": "Number of days prior to collection protocol expiry when email notification should be sent to the PI.",
         "cp_expiry_rem_rept_inter": "Repeat CP Expiry Reminder",
         "cp_expiry_rem_rept_inter_desc": "Number of days after which email notification should be repeated for collection protocol expiry.",
-        "cp_sop_doc_dir": "CP SOP Documents Directory",
+        "unique_spmn_label_per_cp": "Unique Specimen Label per CP",
+        "unique_spmn_label_per_cp_desc": "Enable or Disable uniqueness of Specimen labels at CP level. Enabling this setting ensures Specimen labels are unique only within Collection Protocol. Disabling this setting ensures no two specimen labels are same throughout the system.",
+        "cp_sop_docs_dir": "SOP Documents Directory",
         "cp_sop_doc_dir_desc": "Folder on server to store collection protocol SOP documents",
         "cp_sop_doc_url": "CP SOP Link",
         "cp_sop_doc_url_desc": "System level collection protocol SOP document link",
         "cp_sop_doc": "CP SOP Document",
-        "cp_sop_doc_desc": "System level collection protocol SOP document"
+        "cp_sop_doc_desc": "System level collection protocol SOP document",
+        "sys_workflows": "System Workflows",
+        "sys_workflows_desc": "System level participants and specimens list view configuration. This configuration is used when CP specific configuration is not specified",
+        "pending_spmns_disp_interval": "Anticipated Specimens Display Interval",
+        "pending_spmns_disp_interval_desc": "Anticipated specimens will be automatically hidden in specimen tree after specified number of days have elapsed since collection of parent specimen or visit"
       },
 
       "common": {

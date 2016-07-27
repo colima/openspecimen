@@ -5,6 +5,16 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+  <changeSet author="ckhilosiya" id="Enabling or Disabling unique specimen label per CP">
+    <sql>
+      call add_cfg_prop(
+        'biospecimen', 'unique_spmn_label_per_cp',
+        'unique_spmn_label_per_cp', 'unique_spmn_label_per_cp_desc',
+        'BOOLEAN', 'false'
+      );
+    </sql>
+  </changeSet>
+
   <changeSet author="vlonushte" id="Specifiy directory to store collection protocol SOP documents">
     <sql>
       call add_cfg_prop(
@@ -50,6 +60,49 @@
         'cp_sop_doc', 'cp_sop_doc_desc',
         'FILE', ''
       );
+    </sql>
+  </changeSet>
+
+  <changeSet author="vpawar" id="Default system level workflows">
+    <sql>
+      call add_cfg_prop(
+        'biospecimen', 'sys_workflows',
+        'sys_workflows', 'sys_workflows_desc',
+        'FILE', 'classpath:/com/krishagni/catissueplus/core/biospecimen/system-workflows.json'
+      );
+    </sql>
+  </changeSet>
+
+  <changeSet author="vlonushte" id="Pending specimens display interval setting">
+    <sql>
+      call add_cfg_prop(
+        'biospecimen', 'pending_spmns_disp_interval',
+        'pending_spmns_disp_interval', 'pending_spmns_disp_int_desc',
+        'INT', '60'
+      );
+    </sql>
+  </changeSet>
+
+  <changeSet author="mdnasim" id="Update training card url">
+    <sql>
+      update
+        os_cfg_settings
+      set
+        value = 'http://training.openspecimen.org'
+      where
+        property_id = (
+          select
+            p.identifier
+          from
+            os_cfg_props p
+            inner join os_modules m
+          on
+            p.module_id = m.identifier
+          where
+            m.name = 'common' and
+            p.name = 'training_url'
+        ) and
+        activity_status = 'Active';
     </sql>
   </changeSet>
 </databaseChangeLog>

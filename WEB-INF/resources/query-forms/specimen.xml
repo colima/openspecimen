@@ -190,15 +190,6 @@
     </row>
 
     <row>
-      <booleanCheckBox>
-        <name>isAvailable</name>
-        <udn>isAvailable</udn>
-        <caption>#getMessage("specimen_is_available")</caption>
-        <column>AVAILABLE</column>
-      </booleanCheckBox>
-    </row>
-
-    <row>
       <numberField>
         <name>concentration</name>
         <udn>concentration</udn>
@@ -359,17 +350,6 @@
                 <caption>#getMessage("specimen_collector")</caption>
                 <column>IDENTIFIER</column>
               </userField>    
-            </row>
-            <row>
-              <dropDown>
-                <name>department</name>
-                <udn>department</udn>
-                <caption>#getMessage("specimen_collector_department")</caption>
-                <column>DEPARTMENT_NAME</column>
-                <options>
-                  <sql>select distinct DEPARTMENT_NAME from USER_VIEW</sql>
-                </options>
-              </dropDown>
             </row>
             <row>
               <dropDown>

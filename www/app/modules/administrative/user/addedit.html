@@ -1,13 +1,19 @@
 
 <div>
   <div os-page-header>
-    <ul os-breadcrumbs>
-      <li><a ui-sref="user-list" translate="user.list">Users</a></li>
-    </ul>
-    <h3>
-      <span ng-if="!user.id" translate="user.create_user">Create User</span>
-      <span ng-if="!!user.id">{{user.lastName}} {{user.firstName}}</span>
-    </h3> 
+    <div class="os-page-header-content">
+      <ul os-breadcrumbs>
+        <li>
+          <a ui-sref="user-list">
+            <span translate="user.list">Users</span>
+          </a>
+        </li>
+      </ul>
+      <h3>
+        <span ng-if="!user.id" translate="user.create_user">Create User</span>
+        <span ng-if="!!user.id">{{user.lastName}} {{user.firstName}}</span>
+      </h3> 
+    </div>
   </div>
 
   <div class="container">
@@ -66,20 +72,10 @@
       <div class="form-group">
         <label class="col-xs-3 control-label" translate="user.institute">Institute</label>
         <div class="col-xs-6">
-          <os-select ng-model="user.instituteName" list="institutes" on-change="loadDepartments"
+          <os-select ng-model="user.instituteName" list="institutes"
             name="institute" placeholder="{{'user.institute' | translate}}" required>
           </os-select>
           <div os-field-error field="userForm.institute"></div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="col-xs-3 control-label" translate="user.department">Department</label>
-        <div class="col-xs-6">
-          <os-select ng-model="user.deptName" list="departments" name="department"
-            placeholder="{{'user.department' | translate}}" required>
-          </os-select>
-          <div os-field-error field="userForm.department"></div>
         </div>
       </div>
 
