@@ -2,7 +2,7 @@
 angular.module('os.administrative.shipment.addedit', ['os.administrative.models', 'os.biospecimen.models'])
   .controller('ShipmentAddEditCtrl', function(
     $scope, $state, shipment, spmnRequest, cp, Shipment,
-    Institute, Site, Specimen, SpecimensHolder, Alerts, Util) {
+    Institute, Site, Specimen, SpecimensHolder, Alerts, Util, SpecimenUtil) {
 
     function init() {
       $scope.shipment = shipment;
@@ -94,13 +94,16 @@ angular.module('os.administrative.shipment.addedit', ['os.administrative.models'
     function getShipmentItems(specimens) {
       return specimens.filter(
         function(specimen) {
-          return specimen.available && specimen.availableQty > 0 && specimen.activityStatus == 'Active';
-        }).map(
+          return (specimen.availableQty == undefined || specimen.availableQty > 0)
+                 && specimen.activityStatus == 'Active';
+        }
+      ).map(
         function(specimen) {
           return {
             specimen: specimen
           };
-        });
+        }
+      );
     }
 
     function getShipmentItemsFromReq(reqItems, shipmentItems) {
@@ -161,6 +164,10 @@ angular.module('os.administrative.shipment.addedit', ['os.administrative.models'
       );
     };
 
+    $scope.passThrough = function() {
+      return true;
+    }
+
     $scope.onInstituteSelect = function(instituteName) {
       $scope.shipment.receivingSite = undefined;
       $scope.shipment.notifyUsers = [];
@@ -178,15 +185,13 @@ angular.module('os.administrative.shipment.addedit', ['os.administrative.models'
     }
 
     $scope.addSpecimens = function(labels) {
-      var param = {
-        label: labels,
-        sendSiteName: $scope.shipment.sendingSite,
-        recvSiteName: $scope.shipment.receivingSite
-      }
-
-      return Specimen.listForShipment(param).then(
+      return SpecimenUtil.getSpecimens(labels).then(
         function (specimens) {
-          Util.appendAll($scope.shipment.shipmentItems, getShipmentItems(specimens));
+          if (!specimens) {
+            return false;
+          }
+
+          Util.addIfAbsent($scope.shipment.shipmentItems, getShipmentItems(specimens), 'specimen.id');
           return true;
         }
       );
@@ -205,6 +210,10 @@ angular.module('os.administrative.shipment.addedit', ['os.administrative.models'
 
     $scope.saveDraft = function() {
       saveOrUpdate('Pending');
+    }
+
+    $scope.passThrough = function() {
+      return true;
     }
 
     $scope.toggleAllSpecimensSelect = function() {

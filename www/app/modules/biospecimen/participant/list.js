@@ -1,58 +1,96 @@
 
 angular.module('os.biospecimen.participant.list', ['os.biospecimen.models'])
   .controller('ParticipantListCtrl', function(
-    $scope, $state, $stateParams, $modal, $q, osRightDrawerSvc,
-    cp, CollectionProtocolRegistration, Util, ListPagerOpts) {
+    $scope, $state, osRightDrawerSvc, cp, participantListCfg,
+    Util, ListPagerOpts) {
 
-    var pagerOpts, filterOpts;
+    var ctrl = this;
+
+    var pagerOpts, listParams;
 
     function init() {
-      $scope.cpId = $stateParams.cpId;
-      $scope.cp = cp;
-      pagerOpts  = $scope.pagerOpts = new ListPagerOpts({listSizeGetter: getCprCount});
-      filterOpts = $scope.filterOpts = {maxResults: ListPagerOpts.MAX_PAGE_RECS + 1};
+      pagerOpts  = new ListPagerOpts({listSizeGetter: getParticipantsCount});
+      listParams = {listName: 'participant-list-view', maxResults: pagerOpts.recordsPerPage + 1};
 
-      $scope.participantResource = {
-        registerOpts: {resource: 'ParticipantPhi', operations: ['Create'], cp: $scope.cp.shortTitle},
-      }
+      $scope.cpId = cp.id;
+
+      $scope.ctx = {
+        filtersCfg: angular.copy(participantListCfg.filters),
+        filters: {},
+        participants: {},
+        listSize: -1
+      };
 
       angular.extend($scope.listViewCtx, {
         listName: 'participant.list',
+        ctrl: ctrl,
         headerButtonsTmpl: 'modules/biospecimen/participant/register-button.html',
-        showSearch: true
+        headerActionsTmpl: 'modules/biospecimen/participant/list-pager.html',
+        showSearch: (participantListCfg.filters && participantListCfg.filters.length > 0)
       });
 
       loadParticipants();
-      Util.filter($scope, 'filterOpts', loadParticipants);
+      Util.filter($scope, 'ctx.filters', loadParticipants);
     }
 
     function loadParticipants() {
-      CollectionProtocolRegistration.listForCp($scope.cpId, true, $scope.filterOpts).then(
-        function(cprList) {
-          if (!$scope.cprList && cprList.length > 12) {
-            //
-            // Show search options when number of participants are more than 12
-            //
-            osRightDrawerSvc.open();
+      cp.getListDetail(listParams, getFilters()).then(
+        function(participants) {
+          $scope.ctx.participants = participants;
+          if (listParams.includeCount) {
+            $scope.ctx.listSize = participants.size;
           }
 
-          $scope.cprList = cprList;
-          pagerOpts.refreshOpts(cprList);
+          pagerOpts.refreshOpts(participants.rows);
+          if (participants.rows.length > 12 && $scope.listViewCtx.showSearch) {
+            osRightDrawerSvc.open();
+          }
         }
-      )
+      );
     }
 
-    function getCprCount() {
-      return CollectionProtocolRegistration.getCprCount($scope.cpId, true, filterOpts);
+    function getParticipantsCount() {
+      if (!listParams.includeCount) {
+        listParams.includeCount = true;
+        return cp.getListSize(listParams, getFilters()).then(
+          function(size) {
+            $scope.ctx.listSize = size;
+            return {count: size};
+          }
+        );
+      } else {
+        return {count: $scope.ctx.listSize};
+      }
     }
 
-    $scope.clearFilters = function() {
-      $scope.filterOpts = {};
+    function getFilters() {
+      var filters = [];
+      if ($scope.ctx.$listFilters) {
+        filters = $scope.ctx.$listFilters.getFilters();
+      }
+
+      return filters;
+    }
+
+    $scope.showParticipant = function(row) {
+      $state.go('participant-detail.overview', {cprId: row.hidden.cprId});
     };
 
-    $scope.showParticipantOverview = function(cpr) {
-      $state.go('participant-detail.overview', {cprId: cpr.cprId});
-    };
+    $scope.loadFilterValues = function(expr) {
+      return cp.getExpressionValues(expr);
+    }
+
+    $scope.setListCtrl = function($list) {
+      $scope.ctx.$list = $list;
+    }
+
+    $scope.setFiltersCtrl = function($listFilters) {
+      $scope.ctx.$listFilters = $listFilters;
+    }
+
+    this.pagerOpts = function() {
+      return pagerOpts;
+    }
 
     init();
   });

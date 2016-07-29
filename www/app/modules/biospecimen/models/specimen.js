@@ -29,14 +29,6 @@ angular.module('os.biospecimen.models.specimen', ['os.common.models', 'os.biospe
       return Specimen.query({label: labels});
     };
     
-    Specimen.listForDp = function (labels, dpId) {
-      return Specimen.query({label: labels, dpId: dpId});
-    }
-    
-    Specimen.listForShipment = function (param) {
-      return Specimen.query(param);
-    }
-
     Specimen.flatten = function(specimens, parent, depth, pooledSpecimen) {
       var result = [];
       if (!specimens) {
@@ -62,7 +54,12 @@ angular.module('os.biospecimen.models.specimen', ['os.common.models', 'os.biospe
         var hasChildren = (!!specimen.children && specimen.children.length > 0);
         specimen.hasChildren = hasSpecimensPool || hasChildren;
         if (hasChildren) {
-          result = result.concat(Specimen.flatten(specimen.children, specimen, depth +1));
+          result = result.concat(Specimen.flatten(specimen.children, specimen, depth + 1));
+        }
+
+        specimen.hasOnlyPendingChildren = hasOnlyPendingChildren(specimen.children);
+        if (specimen.hasOnlyPendingChildren) {
+          specimen.hasOnlyPendingChildren = hasOnlyPendingChildren(specimen.specimensPool);
         }
       });
 
@@ -119,6 +116,10 @@ angular.module('os.biospecimen.models.specimen', ['os.common.models', 'os.biospe
           return result.data;
         }
       );
+    }
+
+    Specimen.getByIds = function(ids) {
+      return Specimen.query({id: ids});
     }
 
     Specimen.prototype.getType = function() {
@@ -263,6 +264,18 @@ angular.module('os.biospecimen.models.specimen', ['os.common.models', 'os.biospe
         function(result) {
           angular.extend(specimen, result.data);
           return new Specimen(result);
+        }
+      );
+    }
+
+    function hasOnlyPendingChildren(specimens) {
+      if (!specimens || specimens.length == 0) {
+        return true;
+      }
+
+      return specimens.every(
+        function(spmn) {
+          return !spmn.status || spmn.status == 'Pending';
         }
       );
     }

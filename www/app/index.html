@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="external_components/select2/css/select2-bootstrap.css"></script>
     <link rel="stylesheet" href="external_components/de/css/de.css"></script>
     <!-- endbuild -->
-    <!-- build:css(.tmp) css/app.css -->
+    <!-- build:css(.tmp) styles/app.css -->
     <link rel="stylesheet" href="styles/app.css">
     <link rel="stylesheet" href="styles/home.css">
     <link rel="stylesheet" href="styles/toasts.css">
@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="styles/modal.css">
     <link rel="stylesheet" href="styles/tube-wizard.css">
     <link rel="stylesheet" href="styles/classic-wizard.css">
+    <link rel="stylesheet" href="styles/page-header.css">
     <link rel="stylesheet" href="styles/sidemenu.css">
     <link rel="stylesheet" href="styles/inline-edit.css">
     <link rel="stylesheet" href="styles/file-upload.css">
@@ -57,9 +58,6 @@
     <link rel="stylesheet" href="styles/tabs.css">
     <link rel="stylesheet" href="styles/scrollbar.css">
     <link rel="stylesheet" href="styles/de-table.css">
-
-    <!-- custom modules css -->
-    <!-- link rel="stylesheet" href="styles/le/styles/le.css" -->
     <!-- endbuild -->
   </head>
   <body> <!-- ng-app="openspecimen" -->
@@ -174,6 +172,9 @@
     <script src="modules/common/state-params-resolver.js"></script>
     <script src="modules/common/chart.js"></script>
     <script src="modules/common/list-pager.js"></script>
+    <script src="modules/common/list.js"></script>
+    <script src="modules/common/list-filters.js"></script>
+    <script src="modules/common/check-list.js"></script>
 
     <!-- Search module -->
     <script src="modules/common/search/module.js"></script>
@@ -362,6 +363,7 @@
     <script src="modules/biospecimen/participant/consents.js"></script>
     <script src="modules/biospecimen/participant/search-service.js"></script>
     <script src="modules/biospecimen/participant/import-util.js"></script>
+    <script src="modules/biospecimen/participant/specimens-list.js"></script>
 
     <!-- Visit detail module -->
     <script src="modules/biospecimen/participant/visit/module.js"></script>
@@ -382,6 +384,7 @@
     <script src="modules/biospecimen/participant/specimen/bulk-create-aliquots.js"></script>
     <script src="modules/biospecimen/participant/specimen/bulk-create-derivatives.js"></script>
     <script src="modules/biospecimen/participant/specimen/bulk-add-event.js"></script>
+    <script src="modules/biospecimen/participant/specimen/search-service.js"></script>
 
     <!-- Specimen List module  -->
     <script src="modules/biospecimen/specimen-list/module.js"></script>

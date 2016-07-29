@@ -1,38 +1,40 @@
 <div>
   <div os-page-header>
-    <ul os-breadcrumbs>
-      <li>
-        <a ui-sref="cp-list-view({cpId: cpr.cpId})">
-          <span>{{cpr.cpShortTitle}}</span>
-        </a>
-      </li>
-      <li>
-        <a ui-sref="participant-detail.overview({cprId: cpr.id})">
-          <ng-switch on="!!(cpr.participant.lastName || cpr.participant.firstName)">
-            <span ng-switch-when="true"> {{cpr.participant.firstName}} {{cpr.participant.lastName}} </span>
-            <span ng-switch-when="false" translate="common.na"> N/A </span>
-          </ng-switch>
-          <span>({{cpr.ppid}})</span>
-        </a>
-      </li>
-      <li>
-        <a ui-sref="visit-detail.overview({visitId: visit.id, eventId: visit.eventId})">
-          <span>T{{visit.eventPoint}}: {{visit.eventLabel}}</span>
-        </a>
-      </li>
-      <li>
-        <a ui-sref="specimen-detail.overview({specimenId: parentSpecimen.id, srId: parentSpecimen.reqId})">
-          <span>{{parentSpecimen.label}}</span>
-        </a>
-      </li>
-    </ul>
+    <div class="os-page-header-content">
+      <ul os-breadcrumbs>
+        <li>
+          <a ui-sref="cp-list-view({cpId: cpr.cpId})">
+            <span>{{cpr.cpShortTitle}}</span>
+          </a>
+        </li>
+        <li>
+          <a ui-sref="participant-detail.overview({cprId: cpr.id})">
+            <ng-switch on="!!(cpr.participant.lastName || cpr.participant.firstName)">
+              <span ng-switch-when="true"> {{cpr.participant.firstName}} {{cpr.participant.lastName}} </span>
+              <span ng-switch-when="false" translate="common.na"> N/A </span>
+            </ng-switch>
+            <span>({{cpr.ppid}})</span>
+          </a>
+        </li>
+        <li>
+          <a ui-sref="visit-detail.overview({visitId: visit.id, eventId: visit.eventId})">
+            <span>T{{visit.eventPoint}}: {{visit.eventLabel}}</span>
+          </a>
+        </li>
+        <li>
+          <a ui-sref="specimen-detail.overview({specimenId: parentSpecimen.id, srId: parentSpecimen.reqId})">
+            <span>{{parentSpecimen.label}}</span>
+          </a>
+        </li>
+      </ul>
 
-    <h3>
-      <span translate="specimens.create_aliquots">Create Aliquots</span>
-    </h3>
+      <h3>
+        <span translate="specimens.create_aliquots">Create Aliquots</span>
+      </h3>
+    </div>
   </div>
 
-  <div class="container os-margin-top">
+  <div class="container">
     <form name="aliquotForm" class="form-horizontal" os-form-validator="aliquotForm" validator="aliquotFormValidator" novalidate>
       <div class="form-group">
         <label class="col-xs-3 control-label" translate="specimens.parent_specimen">Parent Specimen</label>
@@ -43,8 +45,7 @@
         </div>
         <label class="col-xs-2 control-label" translate="specimens.available_qty">Available Quantity</label>
         <div class="col-xs-2 os-ctrl-padding-top">
-          <span>{{parentSpecimen.availableQty}}</span>
-          <os-specimen-unit specimen-class="parentSpecimen.specimenClass" type="parentSpecimen.type"></os-specimen-unit>
+          <os-spmn-measure-val specimen="parentSpecimen" value="parentSpecimen.availableQty"></os-spmn-measure-val>
         </div>
       </div>
 
@@ -64,7 +65,7 @@
         <div class="col-xs-6">
           <input name="noOfAliquots" ng-model="aliquotSpec.noOfAliquots"
             class="form-control" type="text" placeholder="{{'specimens.aliquot_cnt' | translate}}"
-            ng-required="!aliquotSpec.qtyPerAliquot" ng-pattern="/^[1-9][0-9]*$/">
+            ng-required="!aliquotSpec.qtyPerAliquot || !parentSpecimen.availableQty" ng-pattern="/^[1-9][0-9]*$/">
           <div os-field-error field="aliquotForm.noOfAliquots"></div>
         </div>
       </div>
@@ -75,7 +76,7 @@
           <div class="input-group">
             <input name="qtyPerAliquot" ng-model="aliquotSpec.qtyPerAliquot"
               class="form-control" type="text" placeholder="{{'specimens.qty_per_aliquot' | translate}}"
-              ng-required="!aliquotSpec.noOfAliquots"
+              ng-required="!aliquotSpec.noOfAliquots || !parentSpecimen.availableQty"
               ng-pattern="/^([1-9][0-9]*(\.([0-9]{1,2}))?)$|^([0]\.([0-9]{1,2}))$/">
             <div class="input-group-addon">
               <os-specimen-unit specimen-class="parentSpecimen.specimenClass" type="parentSpecimen.type">
@@ -164,6 +165,17 @@
             </span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-xs-3 control-label">
+        <span translate="specimens.comments">Comments</span>
+      </label>
+      <div class="col-xs-6">
+        <textarea ng-model="aliquotSpec.comments" class="form-control"
+          placeholder="{{'specimens.comments' | translate}}" rows="2">
+        </textarea>
       </div>
     </div>
 

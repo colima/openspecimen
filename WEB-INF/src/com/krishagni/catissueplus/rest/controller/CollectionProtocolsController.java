@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +60,10 @@ import com.krishagni.catissueplus.core.de.events.FormSummary;
 import com.krishagni.catissueplus.core.de.events.SavedQuerySummary;
 import com.krishagni.catissueplus.core.de.services.CatalogService;
 import com.krishagni.catissueplus.core.de.services.FormService;
+import com.krishagni.catissueplus.core.query.Column;
+import com.krishagni.catissueplus.core.query.ListConfig;
+import com.krishagni.catissueplus.core.query.ListDetail;
+import com.krishagni.catissueplus.core.query.ListGenerator;
 
 import edu.common.dynamicextensions.nutility.IoUtil;
 
@@ -73,6 +79,9 @@ public class CollectionProtocolsController {
 
 	@Autowired
 	private CatalogService catalogSvc;
+
+	@Autowired
+	private ListGenerator listGenerator;
 
 	@Autowired
 	private HttpServletRequest httpServletRequest;
@@ -384,7 +393,7 @@ public class CollectionProtocolsController {
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody		
 	public CpWorkflowCfgDetail getWorkflowCfg(@PathVariable("id") Long cpId) {
-		ResponseEvent<CpWorkflowCfgDetail> resp = cpSvc.getWorkflows(new RequestEvent<Long>(cpId));
+		ResponseEvent<CpWorkflowCfgDetail> resp = cpSvc.getWorkflows(new RequestEvent<>(cpId));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -400,7 +409,7 @@ public class CollectionProtocolsController {
 			input.getWorkflows().put(workflow.getName(), workflow);
 		}
 		
-		ResponseEvent<CpWorkflowCfgDetail> resp = cpSvc.saveWorkflows(new RequestEvent<CpWorkflowCfgDetail>(input));
+		ResponseEvent<CpWorkflowCfgDetail> resp = cpSvc.saveWorkflows(new RequestEvent<>(input));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -522,6 +531,7 @@ public class CollectionProtocolsController {
 			String[] entityTypes) {
 		return formSvc.getEntityForms(cpId, entityTypes);
 	}
+
 	@RequestMapping(method = RequestMethod.POST, value="/merge")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
@@ -531,7 +541,100 @@ public class CollectionProtocolsController {
 
 		return resp.getPayload();
 	}
-	
+
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/list-config")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public ListConfig getListConfig(
+			@PathVariable("id")
+			Long cpId,
+
+			@RequestParam(value = "listName", required = true)
+			String listName) {
+
+		Map<String, Object> listCfgReq = new HashMap<>();
+		listCfgReq.put("cpId", cpId);
+		listCfgReq.put("listName", listName);
+
+		ResponseEvent<ListConfig> resp = cpSvc.getCpListCfg(new RequestEvent<>(listCfgReq));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}/expression-values")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public Collection<Object> getExpressionValues(
+			@PathVariable("id")
+			Long cpId,
+
+			@RequestParam(value = "expr", required = true)
+			String expr,
+
+			@RequestParam(value = "searchTerm", required = false, defaultValue = "")
+			String searchTerm) {
+
+		return listGenerator.getExpressionValues(cpId, expr, searchTerm);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/{id}/list-detail")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public ListDetail getListDetail(
+			@PathVariable("id")
+			Long cpId,
+
+			@RequestParam(value = "listName", required = true)
+			String listName,
+
+			@RequestParam(value = "startAt", required = false, defaultValue = "0")
+			int startAt,
+
+			@RequestParam(value = "maxResults", required = false, defaultValue = "100")
+			int maxResults,
+
+			@RequestParam(value = "includeCount", required = false, defaultValue = "false")
+			boolean includeCount,
+
+			@RequestBody
+			List<Column> filters) {
+
+		Map<String, Object> listReq = new HashMap<>();
+		listReq.put("cpId", cpId);
+		listReq.put("listName", listName);
+		listReq.put("startAt", startAt);
+		listReq.put("maxResults", maxResults);
+		listReq.put("includeCount", includeCount);
+		listReq.put("filters", filters);
+
+		ResponseEvent<ListDetail> resp = cpSvc.getList(getRequest(listReq));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/{id}/list-size")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public Map<String, Integer> getListSize(
+			@PathVariable("id")
+			Long cpId,
+
+			@RequestParam(value = "listName", required = true)
+			String listName,
+
+			@RequestBody
+			List<Column> filters) {
+
+		Map<String, Object> listReq = new HashMap<>();
+		listReq.put("cpId", cpId);
+		listReq.put("listName", listName);
+		listReq.put("filters", filters);
+
+		ResponseEvent<Integer> resp = cpSvc.getListSize(getRequest(listReq));
+		resp.throwErrorIfUnsuccessful();
+		return Collections.singletonMap("size", resp.getPayload());
+	}
+
 	private ConsentTierDetail performConsentTierOp(OP op, Long cpId, ConsentTierDetail consentTier) {
 		ConsentTierOp req = new ConsentTierOp();		
 		req.setConsentTier(consentTier);

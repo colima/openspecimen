@@ -98,7 +98,7 @@
   padding: 0px 4px;
 }
 
-.os-page-hdr .os-status-closed {
+.os-page-header .os-status-closed {
   background: #d9534f!important;
   padding: 0px 4px;
   color: #fff;
@@ -125,8 +125,7 @@
   height: 16px;
   margin-left: -8px;
   margin-top: 4px;
-  margin-right: 8px;
-  position: absolute;
+  float: left;
 }
 
 .os-key-values .value.os-status-collected, 
@@ -142,6 +141,10 @@
   border-radius: 4px;
   font-weight: bold;
   color: white;
+}
+
+.dropdown-menu .fa.os-status-pending:before {
+  padding: 0px;
 }
 
 .os-key-values .value.os-status-collected {
