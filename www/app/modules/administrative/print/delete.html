@@ -1,0 +1,20 @@
+<div>
+  <div class="os-modal-header">
+    <span translate="visit_print_rules.delete_alert">Delete Rule Confirmation</span>
+  </div>
+  <div class="os-modal-body">
+    <span translate="visit_print_rules.delete_info">Rule will be deleted forever. Are you sure to you want to proceed ?
+    </span>
+    <div class="os-modal-footer">
+      <div class="form-group">
+        <button show-if-admin class="btn os-btn-text" ng-click="cancel()">
+          <span translate="common.buttons.cancel">Cancel</span>
+        </button>
+
+        <button show-if-admin class="btn btn-danger" ng-click="ok()">
+          <span translate="common.yes">YES</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

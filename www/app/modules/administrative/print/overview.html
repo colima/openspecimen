@@ -1,0 +1,68 @@
+<div>
+  <div class="os-page-commands">
+    <div class="left">
+      <button show-if-admin class="default" title="{{'visit_print_rules.edit_tooltip' | translate}}"
+        ui-sref="print-rule-addedit({ruleId: printrule.id, type: type})">                                  <!-- >site<-->
+        <span class="fa fa-pencil"></span>
+        <span translate="common.buttons.edit">Edit</span>
+      </button>
+      <button show-if-admin class="default" ng-click="printRuleDelete()">
+        <span class="fa fa-trash"></span>
+        <span translate="common.buttons.delete">Delete</span>
+      </button>
+    </div>
+  </div>
+  <div class="clearfix">
+    <div class="col-xs-8">
+      <ul class="os-key-values os-two-cols">
+
+        <li class="item" ng-if=type=='specimen'>
+          <strong class="key key-sm" translate="visit_print_rules.specimen_type">Specimen Type</strong>
+          <span>{{printrule.specimenType}}</span>
+        </li>
+
+        <li class="item" ng-if="type=='specimen'">
+          <strong class="key key-sm" translate="visit_print_rules.specimen_class">Specimen Class</strong>
+          <span>{{printrule.specimenClass}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.site_name">Site Name</strong>
+          <span>{{printrule.siteName}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.cp_name">CP Short Title</strong>
+          <span>{{printrule.cpShortTitle}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.user_name">User</strong>
+          <span>{{printrule.user.firstName}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.ipRange">IP Range</strong>
+          <span>{{printrule.ipRange}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.label_type">Label Type</strong>
+          <span>{{printrule.labelType}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.label_design">Label Design</strong>
+          <span>{{printrule.labelDesign}}</span>
+        </li>
+
+        <li class="item">
+          <strong class="key key-sm" translate="visit_print_rules.tokens">Tokens</strong>
+          <span>{{printrule.tokens | osArrayJoin:getCoordinatorDisplayText  | osNoValue}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+

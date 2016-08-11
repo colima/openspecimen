@@ -1,0 +1,150 @@
+
+<div>
+  <div os-page-header>
+    <div class="os-page-header-content">
+      <ul os-breadcrumbs>
+        <li>
+          <a ui-sref="print-list">
+            <span translate="visit_print_rules.list">Print Rules</span>
+          </a>
+        </li>
+      </ul>
+      <h3>
+        <span ng-if="!rule.id" translate="visit_print_rules.create_rule">Create Rule</span>
+        <span ng-if="!!rule.id" translate="visit_print_rules.update_rule">Update Rule</span>
+      </h3>
+    </div>
+  </div>
+
+  <div class="container">
+    <form name="ruleForm" class="form-horizontal" os-form-validator="ruleForm" validator="ruleFormValidator" novalidate>
+      <div class="form-group" ng-if="!rule.id" ng-init="rule.type='visit'">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.type">Type</label>
+        <label class="radio-inline">
+          <input type="radio" name="Visit" ng-model="rule.type" value="visit">
+          <span translate="visit_print_rules.visit">Visit</span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="Specimen" ng-model="rule.type" value="specimen">
+          <span translate="visit_print_rules.specimen">Specimen</span>
+        </label>
+      </div>
+
+      <div class="form-group" ng-if="type=='specimen' || (!rule.id && rule.type=='specimen')">
+        <label class="col-xs-3 control-label" name="visit_print_rules.specimenType" translate="visit_print_rules.specimen_type">Specimen Type</label>
+        <div class="col-xs-6">
+          <input type="text" name="specimenType" ng-model="rule.specimenType" class="form-control"
+            placeholder="{{'visit_print_rules.specimen_type' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group" ng-if="type=='specimen' || (!rule.id && rule.type=='specimen')">
+        <label class="col-xs-3 control-label" name="visit_print_rules.specimenClass" translate="visit_print_rules.specimen_class">Specimen Class</label>
+        <div class="col-xs-6">
+          <input type="text" name="specimenClass" ng-model="rule.specimenClass" class="form-control"
+            placeholder="{{'visit_print_rules.specimen_class' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.site_name">Site Name</label>
+        <div class="col-xs-6">
+          <os-select name="SiteName" ng-model="rule.siteName" list="Sites" filter-opts="piFilterOpts"
+            placeholder="{{'visit_print_rules.site_name' | translate}}">
+          </os-select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.cp_name">CP Short Name</label>
+        <div class="col-xs-6">
+          <os-select name="CP short Name" ng-model="rule.cpShortTitle" list="CPs" filter-opts="piFilterOpts"
+            placeholder="{{'visit_print_rules.cp_name' | translate}}">
+          </os-select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.users">Users</label>
+        <div class="col-xs-6">
+          <os-users name="users" ng-model="rule.user" filter-opts="piFilterOpts"
+            placeholder="{{'visit_print_rules.users' | translate}}">
+          </os-users>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.ipRange">IP Range</label>
+        <div class="col-xs-6">
+          <input type="text" name="IPrange" ng-model="rule.ipRange" class="form-control"
+            placeholder="{{'visit_print_rules.ipRange' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.label_type">Label Type</label>
+        <div class="col-xs-6">
+          <input type="text" name="labelType" ng-model="rule.labelType" class="form-control"
+             placeholder="{{'visit_print_rules.label_type' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.label_design">Label Design</label>
+        <div class="col-xs-6">
+          <input type="text" name="labelDesign" ng-model="rule.labelDesign" class="form-control"
+            placeholder="{{'visit_print_rules.label_design' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.printer">Printer</label>
+        <div class="col-xs-6">
+          <input type="text" name="printer" ng-model="rule.printerName" class="form-control"
+            placeholder="{{'visit_print_rules.printer' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.cmd_file_fmt">Command File Format</label>
+        <div class="col-xs-6">
+          <input type="text" name="firstName" ng-model="rule.cmdFileFormat" class="form-control"
+            placeholder="{{'visit_print_rules.cmd_file_fmt' | translate}}" ng-maxlength="255"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.cmd_file_dir">Command File Directory</label>
+        <div class="col-xs-6">
+          <input type="text" name="cmdFileDir" ng-model="rule.cmdFileDirectory" class="form-control"
+            placeholder="{{'visit_print_rules.cmd_file_dir' | translate}}" ng-maxlength="255" required/>
+          <div os-field-error field="ruleForm.cmdFileDir"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-xs-3 control-label" translate="visit_print_rules.tokens">Tokens</label>
+        <div class="form-group clearfix">
+          <ng-form name="TokensForm">
+            <div class="col-xs-6">
+              <input name="TokensName" ng-model="rule.tokens" ng-list class="form-control"
+                placeholder="{{'visit_print_rules.tokens' | translate}}" required>
+              </input>
+              <div os-field-error field="TokensForm.TokensName"></div>
+            </div>
+          </ng-form>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-6">
+          <button class="btn btn-primary" os-form-submit="saveRule()">
+            <span ng-if="!rule.id" translate="common.buttons.create"> Create </span>
+            <span ng-if="!!rule.id"  translate="common.buttons.update"> Update </span>
+          </button>
+          <button class="btn os-btn-text" ng-click="back()" translate="common.buttons.discard">Discard</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

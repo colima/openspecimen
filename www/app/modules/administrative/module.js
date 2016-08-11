@@ -13,6 +13,7 @@ angular.module('os.administrative',
     'os.administrative.role',
     'os.administrative.form',
     'os.administrative.job',
-    'os.administrative.setting'
+    'os.administrative.setting',
+    'os.administrative.print-rules'
   ]
 );

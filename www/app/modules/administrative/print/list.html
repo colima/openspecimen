@@ -1,0 +1,82 @@
+<div>
+  <div os-page-header>
+    <div class="os-page-header-content">
+      <h3>
+        <span translate="visit_print_rules.list">Print Rules</span>
+      </h3>
+    </div>
+  </div>
+
+  <div class="os-page-commands">
+    <div class="left">
+      <button class="default">
+        <span class="fa fa-plus"></span>
+        <span translate="common.buttons.create" ui-sref="print-rule-addedit({ruleID: ''})">Create</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <table class="os-table os-table-hover">
+      <thead class="os-table-head">
+        <tr class="row">
+          <th class="col">
+            <span translate="visit_print_rules.level">Level</span>
+          </th>
+          <th class="col">
+            <span translate="visit_print_rules.site_name">Site ID</span>
+          </th>
+          <th class="col">
+            <span translate="visit_print_rules.cmd_file_dir">Cmd File Format</span>
+          </th>
+          <th class="col">
+            <span translate="visit_print_rules.cmd_file_fmt">Cmd File Dir</span>
+          </th>
+          <th class="col">
+            <span translate="visit_print_rules.label_type">Label Type</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="os-table-body">
+        <tr class="row" ng-repeat="printRule in printRules" os-row-click="showPrintRuleOverview(printRule)">
+          <td class="col">
+            <span>Visit</span>
+          </td>
+          <td class="col">
+            <span>{{printRule.siteName}}</span>
+          </td>
+          <td class="col">
+            <span>{{printRule.cmdFileDirectory}}</span>
+          </td>
+          <td class="col">
+            <span>{{printRule.cmdFileFormat}}</span>
+          </td>
+          <td class="col">
+            <span>{{printRule.labelType}}</span>
+          </td>
+        </tr>
+      </tbody>
+
+      <tbody class="os-table-body">
+        <tr class="row" ng-repeat="specimenRule in specimenRules" os-row-click="showSpecimenRuleOverview(specimenRule)">
+          <td class="col">
+            <span>Specimen</span>
+          </td>
+          <td class="col">
+            <span>{{specimenRule.siteName}}</span>
+          </td>
+          <td class="col">
+            <span>{{specimenRule.cmdFileDirectory}}</span>
+          </td>
+          <td class="col">
+            <span>{{specimenRule.cmdFileFormat}}</span>
+          </td>
+          <td class="col">
+            <span>{{specimenRule.labelType}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -18,6 +18,7 @@
     "shipping_and_tracking": "Shipping and Tracking",
     "jobs": "Jobs",
     "training": "Training",
+    "print_rules": "Print rules",
 
     "cp_desc": "Create, update SOP of visits and specimens",
     "rde_desc": "Rapidly capture patients, visits and specimens data",
@@ -34,7 +35,8 @@
     "distribution_orders_desc": "Create, execute request orders for distributing specimens",
     "shipping_and_tracking_desc": "Create, ship, track and receive specimen shipments",
     "jobs_desc": "Create, schedule, execute jobs",
-    "training_desc": "User manual and training videos portal"
+    "training_desc": "User manual and training videos portal",
+    "print_rules_desc": "Add, Update and Delete Print Rules"
   },
 
   "common": {
@@ -1741,7 +1743,37 @@
      "quick_search": "Quick Search",
      "search_for": "Search for"
    },
-   
+
+   "visit_print_rules": {
+     "list": "Print Rules",
+     "level":"Level",
+     "site_name": "Site Name",
+     "cmd_file_fmt": "Command File Format",
+     "cmd_file_dir": "Command File Directory",
+     "site_name": "Site",
+     "cp_name": "Collection Protocol",
+     "printer": "Printer",
+     "cmd_file_dir": "Command File Directory",
+     "user_name": "User Name",
+     "ipRange": "IP Range",
+     "label_design": "Label Design",
+     "label_type": "Label Type",
+     "tokens": "Tokens",
+     "create_rule": "Create Rule",
+     "update_rule": "Update Rule",
+     "users": "Users",
+     "tokens": "Tokens",
+     "overview": "Overview",
+     "type": "Type",
+     "visit": "Visit",
+     "specimen": "Specimen",
+     "specimen_type": "Specimen Type",
+     "specimen_class": "Specimen Class",
+     "delete_info": "Rule will be deleted forever. Are you sure to you want to proceed ?",
+     "delete_alert":"Delete Rule Confirmation",
+     "edit_tooltip":"Click to edit Rule"
+   },
+
    "feedback": {
       "title": "Your feedback counts!",
       "info": "Please let us know what you think of OpenSpecimen. Your feedback to improve the product is most welcome.",
