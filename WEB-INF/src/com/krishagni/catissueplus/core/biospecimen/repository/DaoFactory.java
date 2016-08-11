@@ -7,7 +7,6 @@ import com.krishagni.catissueplus.core.administrative.repository.DistributionPro
 import com.krishagni.catissueplus.core.administrative.repository.DpRequirementDao;
 import com.krishagni.catissueplus.core.administrative.repository.InstituteDao;
 import com.krishagni.catissueplus.core.administrative.repository.PermissibleValueDao;
-import com.krishagni.catissueplus.core.administrative.repository.PrintRuleDao;
 import com.krishagni.catissueplus.core.administrative.repository.PrintRuleSpecimenDao;
 import com.krishagni.catissueplus.core.administrative.repository.ScheduledJobDao;
 import com.krishagni.catissueplus.core.administrative.repository.ShipmentDao;
@@ -15,6 +14,7 @@ import com.krishagni.catissueplus.core.administrative.repository.SiteDao;
 import com.krishagni.catissueplus.core.administrative.repository.SpecimenRequestDao;
 import com.krishagni.catissueplus.core.administrative.repository.StorageContainerDao;
 import com.krishagni.catissueplus.core.administrative.repository.UserDao;
+import com.krishagni.catissueplus.core.administrative.repository.VisitPrintRuleDao;
 import com.krishagni.catissueplus.core.audit.repository.AuditDao;
 import com.krishagni.catissueplus.core.auth.repository.AuthDao;
 import com.krishagni.catissueplus.core.common.repository.ConfigSettingDao;
@@ -72,7 +72,7 @@ public interface DaoFactory {
 	
 	public UpgradeLogDao getUpgradeLogDao();
 
-	public PrintRuleDao getPrintRuleDao();
+	public VisitPrintRuleDao getVisitPrintRuleDao();
 
-	PrintRuleSpecimenDao getPrintSpecimenRuleDao();
+	public PrintRuleSpecimenDao getPrintSpecimenRuleDao();
 }

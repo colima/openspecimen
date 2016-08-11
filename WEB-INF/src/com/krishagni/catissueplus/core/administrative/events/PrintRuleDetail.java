@@ -158,13 +158,4 @@ public class PrintRuleDetail {
 
 		return detail;
 	}
-
-	public static List<PrintRuleDetail> from(Collection<PrintRule> rules) {
-		List<PrintRuleDetail> result = new ArrayList<PrintRuleDetail>();
-		for (PrintRule rule: rules) {
-			result.add(from(rule));
-		}
-
-		return result;
-	}
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.events.SpecimenPrintRuleDetail;
+import com.krishagni.catissueplus.core.administrative.events.VisitPrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.services.PrintRuleService;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
@@ -28,8 +29,8 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<PrintRuleDetail> getRules() {
-		ResponseEvent<List<PrintRuleDetail>> resp = printRuleSvc.getRules();
+	public List<VisitPrintRuleDetail> getVisitPrintRules() {
+		ResponseEvent<List<VisitPrintRuleDetail>> resp = printRuleSvc.getVisitPrintRules();
 		resp.throwErrorIfUnsuccessful();
 
 		return resp.getPayload();
@@ -38,9 +39,9 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.POST, value = "/visit")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public PrintRuleDetail createVisitPrintRule (@RequestBody PrintRuleDetail printRule) {
-		RequestEvent<PrintRuleDetail> req = new RequestEvent<PrintRuleDetail>(printRule);
-		ResponseEvent<PrintRuleDetail> resp = printRuleSvc.createRule(req);
+	public VisitPrintRuleDetail createVisitPrintRule (@RequestBody VisitPrintRuleDetail printRule) {
+		RequestEvent<VisitPrintRuleDetail> req = new RequestEvent<>(printRule);
+		ResponseEvent<VisitPrintRuleDetail> resp = printRuleSvc.createVisitPrintRule(req);
 		resp.throwErrorIfUnsuccessful();
 
 		return resp.getPayload();
@@ -49,9 +50,9 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/visit/{id}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public PrintRuleDetail updateVisitPrintRule(@PathVariable Long id, @RequestBody PrintRuleDetail detail) {
+	public VisitPrintRuleDetail updateVisitPrintRule(@PathVariable Long id, @RequestBody VisitPrintRuleDetail detail) {
 		detail.setId(id);
-		ResponseEvent<PrintRuleDetail> resp = printRuleSvc.updatePrintRule(getRequest(detail));
+		ResponseEvent<VisitPrintRuleDetail> resp = printRuleSvc.updateVisitPrintRule(getRequest(detail));
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
@@ -60,21 +61,53 @@ public class PrintRuleController {
 	@RequestMapping(method = RequestMethod.DELETE, value = "/visit/{id}")
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public PrintRuleDetail deleteVisitPrintRule(@PathVariable Long id) {
+	public VisitPrintRuleDetail deleteVisitPrintRule(@PathVariable Long id) {
 		RequestEvent<Long> req = new RequestEvent<>(id);
-		ResponseEvent<PrintRuleDetail> resp  = printRuleSvc.deletePrintRule(req);
+		ResponseEvent<VisitPrintRuleDetail> resp  = printRuleSvc.deleteVisitPrintRule(req);
 		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public VisitPrintRuleDetail getVisitRule(@PathVariable Long id) {
+		ResponseEvent<VisitPrintRuleDetail> resp = printRuleSvc.getVisitRule(new RequestEvent<Long>(id));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
+	//
+	// -Specimen Print Rule
+	//
+
+	@RequestMapping(method = RequestMethod.GET, value = "/specimen")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public List<SpecimenPrintRuleDetail> getSpecimenPrintRules() {
+		ResponseEvent<List<SpecimenPrintRuleDetail>> resp = printRuleSvc.getSpecimenPrintRules();
+		resp.throwErrorIfUnsuccessful();
+
 		return resp.getPayload();
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/specimen")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public SpecimenPrintRuleDetail specimenPrintRule (@RequestBody SpecimenPrintRuleDetail detail) {
+	public SpecimenPrintRuleDetail createSpecimenPrintRule (@RequestBody SpecimenPrintRuleDetail detail) {
 		RequestEvent<SpecimenPrintRuleDetail> req = new RequestEvent<SpecimenPrintRuleDetail>(detail);
 		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.createSpecimenPrintRule(req);
 		resp.throwErrorIfUnsuccessful();
 
+		return resp.getPayload();
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/specimen/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public SpecimenPrintRuleDetail getSpecimenRule(@PathVariable Long id) {
+		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.getSpecimenRule(new RequestEvent<Long>(id));
+		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
 

@@ -8,12 +8,14 @@ import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.Site;
 import com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.User;
+import com.krishagni.catissueplus.core.administrative.domain.VisitPrintRule;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.PrintRuleFactory;
 import com.krishagni.catissueplus.core.administrative.domain.factory.SiteErrorCode;
 import com.krishagni.catissueplus.core.administrative.domain.factory.UserErrorCode;
 import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.events.SpecimenPrintRuleDetail;
+import com.krishagni.catissueplus.core.administrative.events.VisitPrintRuleDetail;
 import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocol;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.CpErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
@@ -32,8 +34,8 @@ public class PrintRuleFactoryImpl implements PrintRuleFactory {
 	}
 
 	@Override
-	public PrintRule createPrintRule(PrintRuleDetail detail) {
-		PrintRule rule = new PrintRule();
+	public VisitPrintRule createPrintRule(VisitPrintRuleDetail detail) {
+		VisitPrintRule rule = new VisitPrintRule();
 		OpenSpecimenException ose = new OpenSpecimenException(ErrorType.USER_ERROR);
 
 		setSite(detail, rule, ose);

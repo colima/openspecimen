@@ -9,7 +9,6 @@ import com.krishagni.catissueplus.core.administrative.repository.DistributionPro
 import com.krishagni.catissueplus.core.administrative.repository.DpRequirementDao;
 import com.krishagni.catissueplus.core.administrative.repository.InstituteDao;
 import com.krishagni.catissueplus.core.administrative.repository.PermissibleValueDao;
-import com.krishagni.catissueplus.core.administrative.repository.PrintRuleDao;
 import com.krishagni.catissueplus.core.administrative.repository.PrintRuleSpecimenDao;
 import com.krishagni.catissueplus.core.administrative.repository.ScheduledJobDao;
 import com.krishagni.catissueplus.core.administrative.repository.ShipmentDao;
@@ -17,13 +16,13 @@ import com.krishagni.catissueplus.core.administrative.repository.SiteDao;
 import com.krishagni.catissueplus.core.administrative.repository.SpecimenRequestDao;
 import com.krishagni.catissueplus.core.administrative.repository.StorageContainerDao;
 import com.krishagni.catissueplus.core.administrative.repository.UserDao;
+import com.krishagni.catissueplus.core.administrative.repository.VisitPrintRuleDao;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ContainerTypeDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.DistributionOrderDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.DistributionProtocolDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.DpRequirementDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.InstituteDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.PermissibleValueDaoImpl;
-import com.krishagni.catissueplus.core.administrative.repository.impl.PrintRuleDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.PrintRuleSpecimenDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ScheduledJobDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.ShipmentDaoImpl;
@@ -31,6 +30,7 @@ import com.krishagni.catissueplus.core.administrative.repository.impl.SiteDaoImp
 import com.krishagni.catissueplus.core.administrative.repository.impl.SpecimenRequestDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.StorageContainerDaoImpl;
 import com.krishagni.catissueplus.core.administrative.repository.impl.UserDaoImpl;
+import com.krishagni.catissueplus.core.administrative.repository.impl.VisitPrintRuleDaoImpl;
 import com.krishagni.catissueplus.core.audit.repository.AuditDao;
 import com.krishagni.catissueplus.core.audit.repository.impl.AuditDaoImpl;
 import com.krishagni.catissueplus.core.auth.repository.AuthDao;
@@ -244,8 +244,8 @@ public class DaoFactoryImpl implements DaoFactory {
 	}
 
 	@Override
-	public PrintRuleDao getPrintRuleDao() {
-		PrintRuleDaoImpl dao = new PrintRuleDaoImpl();
+	public VisitPrintRuleDao getVisitPrintRuleDao() {
+		VisitPrintRuleDaoImpl dao = new VisitPrintRuleDaoImpl();
 		setSessionFactory(dao);
 		return dao;
 	}

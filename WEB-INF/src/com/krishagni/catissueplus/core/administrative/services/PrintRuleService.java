@@ -3,17 +3,17 @@ package com.krishagni.catissueplus.core.administrative.services;
 
 import java.util.List;
 
-import com.krishagni.catissueplus.core.administrative.events.PrintRuleDetail;
 import com.krishagni.catissueplus.core.administrative.events.SpecimenPrintRuleDetail;
+import com.krishagni.catissueplus.core.administrative.events.VisitPrintRuleDetail;
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public interface PrintRuleService {
-	ResponseEvent<PrintRuleDetail> createRule(RequestEvent<PrintRuleDetail> req);
+	ResponseEvent<VisitPrintRuleDetail> createVisitPrintRule(RequestEvent<VisitPrintRuleDetail> req);
 
-	ResponseEvent<PrintRuleDetail> updatePrintRule(RequestEvent<PrintRuleDetail> req);
+	ResponseEvent<VisitPrintRuleDetail> updateVisitPrintRule(RequestEvent<VisitPrintRuleDetail> req);
 
-	ResponseEvent<PrintRuleDetail> deletePrintRule(RequestEvent<Long> req);
+	ResponseEvent<VisitPrintRuleDetail> deleteVisitPrintRule(RequestEvent<Long> req);
 
 	ResponseEvent<SpecimenPrintRuleDetail> createSpecimenPrintRule(RequestEvent<SpecimenPrintRuleDetail> req);
 
@@ -21,5 +21,11 @@ public interface PrintRuleService {
 
 	ResponseEvent<SpecimenPrintRuleDetail> deleteSpecimenPrintRule(RequestEvent<Long> req);
 
-	ResponseEvent<List<PrintRuleDetail>> getRules();
+	ResponseEvent<VisitPrintRuleDetail> getVisitRule(RequestEvent<Long> req);
+
+	ResponseEvent<List<VisitPrintRuleDetail>> getVisitPrintRules();
+
+	ResponseEvent<List<SpecimenPrintRuleDetail>> getSpecimenPrintRules();
+
+	ResponseEvent<SpecimenPrintRuleDetail> getSpecimenRule(RequestEvent<Long> req);
 }

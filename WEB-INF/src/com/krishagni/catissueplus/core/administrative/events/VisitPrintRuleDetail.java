@@ -6,34 +6,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-import com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule;
+import com.krishagni.catissueplus.core.administrative.domain.PrintRule;
+import com.krishagni.catissueplus.core.administrative.domain.VisitPrintRule;
 import com.krishagni.catissueplus.core.common.events.UserSummary;
 
 
-public class SpecimenPrintRuleDetail extends PrintRuleDetail {
+public class VisitPrintRuleDetail extends PrintRuleDetail {
 
-	public String specimenClass;
-
-	public String specimenType;
-
-	public String getSpecimenClass() {
-		return specimenClass;
-	}
-
-	public void setSpecimenClass(String specimenClass) {
-		this.specimenClass = specimenClass;
-	}
-
-	public String getSpecimenType() {
-		return specimenType;
-	}
-
-	public void setSpecimenType(String specimenType) {
-		this.specimenType = specimenType;
-	}
-
-	public static SpecimenPrintRuleDetail from(SpecimenPrintRule rule) {
-		SpecimenPrintRuleDetail detail = new SpecimenPrintRuleDetail();
+	public static VisitPrintRuleDetail from(PrintRule rule) {
+		VisitPrintRuleDetail detail = new VisitPrintRuleDetail();
 		detail.setId(rule.getId());
 		detail.setId(rule.getId());
 
@@ -57,15 +38,13 @@ public class SpecimenPrintRuleDetail extends PrintRuleDetail {
 		detail.setCmdFileDirectory(rule.getCmdFileDirectory());
 		detail.setTokens(new HashSet<>(rule.getTokens()));
 		detail.setActivityStatus(rule.getActivityStatus());
-		detail.setSpecimenClass(rule.getSpecimenClass());
-		detail.setSpecimenType(rule.getSpecimenType());
 
 		return detail;
 	}
 
-	public static List<SpecimenPrintRuleDetail> from(Collection<SpecimenPrintRule> rules) {
-		List<SpecimenPrintRuleDetail> result = new ArrayList<SpecimenPrintRuleDetail>();
-		for (SpecimenPrintRule rule: rules) {
+	public static List<VisitPrintRuleDetail> from(Collection<VisitPrintRule> rules) {
+		List<VisitPrintRuleDetail> result = new ArrayList<VisitPrintRuleDetail>();
+		for (VisitPrintRule rule: rules) {
 			result.add(from(rule));
 		}
 

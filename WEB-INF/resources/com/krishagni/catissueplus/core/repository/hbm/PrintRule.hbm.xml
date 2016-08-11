@@ -41,20 +41,32 @@
 
     <filter name="activeEntity"/>
 
-    <query name="getVisitPrintRules">
-      from
-        com.krishagni.catissueplus.core.administrative.domain.PrintRule
-      where
-        activityStatus != 'Disabled'
-    </query>
-
   </class>
 
   <joined-subclass name="com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule" table="os_specimen_print_rules"
-                   extends="com.krishagni.catissueplus.core.administrative.domain.PrintRule">
+    extends="com.krishagni.catissueplus.core.administrative.domain.PrintRule">
     <key column="RULE_ID"></key>
-      <property name="specimenClass" column="SPECIMEN_CLASS"></property>
-      <property name="specimenType" column="SPECIMEN_TYPE"></property>
+    <property name="specimenClass" column="SPECIMEN_CLASS"></property>
+    <property name="specimenType" column="SPECIMEN_TYPE"></property>
+
+    <query name="getSpecimenPrintRules">
+      from
+      com.krishagni.catissueplus.core.administrative.domain.SpecimenPrintRule
+      where
+      activityStatus != 'Disabled'
+    </query>
+  </joined-subclass>
+
+  <joined-subclass name="com.krishagni.catissueplus.core.administrative.domain.VisitPrintRule" table="os_visit_print_rules"
+    extends="com.krishagni.catissueplus.core.administrative.domain.PrintRule">
+    <key column="RULE_ID"></key>
+
+    <query name="getVisitPrintRules">
+      from
+      com.krishagni.catissueplus.core.administrative.domain.VisitPrintRule
+      where
+      activityStatus != 'Disabled'
+    </query>
   </joined-subclass>
 
 </hibernate-mapping>
