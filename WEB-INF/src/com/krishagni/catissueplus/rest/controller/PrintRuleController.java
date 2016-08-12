@@ -36,6 +36,15 @@ public class PrintRuleController {
 		return resp.getPayload();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public VisitPrintRuleDetail getVisitRule(@PathVariable Long id) {
+		ResponseEvent<VisitPrintRuleDetail> resp = printRuleSvc.getVisitRule(new RequestEvent<Long>(id));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/visit")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
@@ -68,15 +77,6 @@ public class PrintRuleController {
 		return resp.getPayload();
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public VisitPrintRuleDetail getVisitRule(@PathVariable Long id) {
-		ResponseEvent<VisitPrintRuleDetail> resp = printRuleSvc.getVisitRule(new RequestEvent<Long>(id));
-		resp.throwErrorIfUnsuccessful();
-		return resp.getPayload();
-	}
-
 	//
 	// -Specimen Print Rule
 	//
@@ -91,6 +91,15 @@ public class PrintRuleController {
 		return resp.getPayload();
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/specimen/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public SpecimenPrintRuleDetail getSpecimenRule(@PathVariable Long id) {
+		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.getSpecimenRule(new RequestEvent<Long>(id));
+		resp.throwErrorIfUnsuccessful();
+		return resp.getPayload();
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/specimen")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
@@ -99,15 +108,6 @@ public class PrintRuleController {
 		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.createSpecimenPrintRule(req);
 		resp.throwErrorIfUnsuccessful();
 
-		return resp.getPayload();
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/specimen/{id}")
-	@ResponseStatus(HttpStatus.OK)
-	@ResponseBody
-	public SpecimenPrintRuleDetail getSpecimenRule(@PathVariable Long id) {
-		ResponseEvent<SpecimenPrintRuleDetail> resp = printRuleSvc.getSpecimenRule(new RequestEvent<Long>(id));
-		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
 
