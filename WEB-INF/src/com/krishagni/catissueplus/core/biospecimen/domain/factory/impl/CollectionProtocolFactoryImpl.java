@@ -295,7 +295,7 @@ public class CollectionProtocolFactoryImpl implements CollectionProtocolFactory 
 	
 	private String ensureValidLabelFmt(String labelFmt, ErrorCode error, OpenSpecimenException ose) {
 		if (StringUtils.isNotBlank(labelFmt) && !specimenLabelGenerator.isValidLabelTmpl(labelFmt)) {
-			ose.addError(error);
+			ose.addError(error, labelFmt);
 		}
 		
 		return labelFmt;
