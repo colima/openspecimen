@@ -30,7 +30,13 @@ angular.module('os.administrative.container.util', ['os.common.box'])
 
         occupants: [],
         occupantName: function(occupant) {
-          return occupant.occupyingEntityName
+          return occupant.occupyingEntityName;
+        },
+        occupantDisplayValue: function(occupant) {
+          if (occupant.occuypingEntity == 'specimen' && occupant.occupyingEntityProps) {
+            return $("<os-specimen-icon value=\"'" + occupant.occupyingEntityProps.type + "'\"/>");
+          }
+          return occupant.occupyingEntityName;
         },
         allowClicks: allowClicks,
         isVacatable: function(occupant) {
