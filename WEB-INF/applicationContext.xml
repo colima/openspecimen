@@ -282,7 +282,7 @@
     <property name="labelGenerator" ref="specimenLabelGenerator"/>
   </bean>
 
-  <bean id="specUnitsSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.SpecimenUnitServiceImpl">
+  <bean id="specPropsSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.SpecimenPropertiesServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
   </bean>
 

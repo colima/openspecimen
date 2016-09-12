@@ -6,7 +6,7 @@ angular.module('os.biospecimen.common.specimenunit', [])
     var unitsMap = undefined; 
 
     function initCall() {
-      callQ = $http.get(ApiUrls.getBaseUrl() + '/specimen-units');
+      callQ = $http.get(ApiUrls.getBaseUrl() + '/specimen-props/units');
       return callQ;
     }
 

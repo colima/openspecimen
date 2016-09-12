@@ -121,7 +121,7 @@ angular.module('os.common.box', [])
       if (occupant) {
         var cellDesc = $("<a class='slot-desc'/>")
           .attr('title', opts.occupantName(occupant))
-          .append(opts.occupantDisplayValue(occupant));
+          .append(opts.occupantName(occupant));
 
         if (opts.allowClicks) {
           if (opts.box.occupantClick) {

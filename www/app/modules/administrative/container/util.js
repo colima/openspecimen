@@ -30,12 +30,13 @@ angular.module('os.administrative.container.util', ['os.common.box'])
 
         occupants: [],
         occupantName: function(occupant) {
-          return occupant.occupyingEntityName;
-        },
-        occupantDisplayValue: function(occupant) {
-          if (occupant.occuypingEntity == 'specimen' && occupant.occupyingEntityProps) {
-            return $("<os-specimen-icon value=\"'" + occupant.occupyingEntityProps.type + "'\"/>");
+          if (occupant.occuypingEntity == 'specimen') {
+            return $("<os-specimen-icon "+
+              "specimen-class=\"'" + occupant.occupyingEntityProps.class +"'\" " +
+              "type=\"'" + occupant.occupyingEntityProps.type + "'\" " +
+              "title=\"" + occupant.occupyingEntityName + "\"/>");
           }
+
           return occupant.occupyingEntityName;
         },
         allowClicks: allowClicks,

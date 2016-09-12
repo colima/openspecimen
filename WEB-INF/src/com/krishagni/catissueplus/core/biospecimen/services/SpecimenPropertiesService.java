@@ -1,14 +1,13 @@
 package com.krishagni.catissueplus.core.biospecimen.services;
 
 import java.util.List;
-import java.util.Map;
 
+import com.krishagni.catissueplus.core.biospecimen.events.SpecimenIconDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.SpecimenUnitDetail;
-import com.krishagni.catissueplus.core.common.events.RequestEvent;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
-public interface SpecimenUnitService {
+public interface SpecimenPropertiesService {
 	public ResponseEvent<List<SpecimenUnitDetail>> getUnits();
 	
-	public ResponseEvent<Map<String, String>> getSpecimenIcon(RequestEvent<String> value);
+	public ResponseEvent<List<SpecimenIconDetail>> getIcons();
 }
