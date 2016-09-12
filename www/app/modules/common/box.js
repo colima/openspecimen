@@ -245,7 +245,7 @@ angular.module('os.common.box', [])
             }
 
             var cell = undefined;
-            if (!!existing && opts.occupantName(existing).toLowerCase() == label.toLowerCase()) {
+            if (!!existing && opts.occupantName(existing, true).toLowerCase() == label.toLowerCase()) {
               cell = existing;
             } else {
               cell = opts.createCell(label, x, y, existing);
