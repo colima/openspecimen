@@ -410,8 +410,7 @@ public class AccessCtrlMgr {
 	public boolean ensureUpdateParticipantRights(Participant participant) {
 		for (CollectionProtocolRegistration cpr : participant.getCprs()) {
 			try {
-				boolean hasUpdateRights = ensureUpdateCprRights(cpr);
-				if (hasUpdateRights) {
+				if (ensureUpdateCprRights(cpr)) {
 					return true;
 				}
 			} catch (OpenSpecimenException ose) {
