@@ -120,8 +120,13 @@ angular.module('os.common.box', [])
 
       if (occupant) {
         var cellDesc = $("<a class='slot-desc'/>")
-          .attr('title', opts.occupantName(occupant))
-          .append(opts.occupantName(occupant));
+          .attr('title', opts.occupantName(occupant));
+
+          if (opts.occupantDisplayHtml) {
+            cellDesc.append(opts.occupantDisplayHtml(occupant));
+          } else {
+            cellDesc.append(opts.occupantName(occupant));
+          }
 
         if (opts.allowClicks) {
           if (opts.box.occupantClick) {
@@ -245,7 +250,7 @@ angular.module('os.common.box', [])
             }
 
             var cell = undefined;
-            if (!!existing && opts.occupantName(existing, true).toLowerCase() == label.toLowerCase()) {
+            if (!!existing && opts.occupantName(existing).toLowerCase() == label.toLowerCase()) {
               cell = existing;
             } else {
               cell = opts.createCell(label, x, y, existing);

@@ -29,9 +29,12 @@ angular.module('os.administrative.container.util', ['os.common.box'])
         },
 
         occupants: [],
-        occupantName: function(occupant, nameOnly) {
-          if (occupant.occuypingEntity == 'specimen' && !!occupant.occupyingEntityProps && !nameOnly) {
-            return $("<os-specimen-icon "+
+        occupantName: function(occupant) {
+          return occupant.occupyingEntityName;
+        },
+        occupantDisplayHtml: function(occupant) {
+          if (occupant.occuypingEntity == 'specimen' && !!occupant.occupyingEntityProps) {
+            return $("<os-specimen-icon " +
               "specimen-class=\"'" + occupant.occupyingEntityProps.class +"'\" " +
               "type=\"'" + occupant.occupyingEntityProps.type + "'\" " +
               "title=\"" + occupant.occupyingEntityName + "\"/>");
