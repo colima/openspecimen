@@ -1136,16 +1136,3 @@ h4.os-sub-section-title, h5.os-sub-section-title, h6.os-sub-section-title {
 .form-horizontal .control-text {
   padding-top: 7px;
 }
-
-.os-transparent {
-  background: transparent!important;
-}
-
-.os-icon-wrapper {
-  background-color: #3a87ad;
-  color: white;
-  padding: 3px 5px 3px 5px;
-  border-radius: 20%;
-  font-size: 12px;
-  font-weight: bold;
-}

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainerPosition;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 
@@ -35,7 +34,7 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 	
 	private String occupyingEntityName;
 
-	private Map<String, Object> occupyingEntityProps;
+	private Map<String, Object> occupantProps;
 
 	private String cpShortTitle;
 	
@@ -135,12 +134,12 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 		this.occupyingEntityName = occupyingEntityName;
 	}
 
-	public Map<String, Object> getOccupyingEntityProps() {
-		return occupyingEntityProps;
+	public Map<String, Object> getOccupantProps() {
+		return occupantProps;
 	}
 
-	public void setOccupyingEntityProps(Map<String, Object> occupyingEntityProps) {
-		this.occupyingEntityProps = occupyingEntityProps;
+	public void setOccupantProps(Map<String, Object> occupantProps) {
+		this.occupantProps = occupantProps;
 	}
 
 	public String getCpShortTitle() {
@@ -179,15 +178,15 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 		result.setMode(position.getContainer().getPositionLabelingMode().name());
 		
 		if (position.getOccupyingSpecimen() != null) {
-			result.setOccuypingEntity("specimen");
 			Specimen specimen = position.getOccupyingSpecimen();
+			Map<String, Object> props = new HashMap<>();
+			props.put("specimenClass", specimen.getSpecimenClass());
+			props.put("type",          specimen.getSpecimenType());
+
+			result.setOccuypingEntity("specimen");
 			result.setOccupyingEntityId(specimen.getId());
 			result.setOccupyingEntityName(specimen.getLabel());
-
-			Map<String, Object> props = new HashMap<String, Object>();
-			props.put("class", specimen.getSpecimenClass());
-			props.put("type", specimen.getSpecimenType());
-			result.setOccupyingEntityProps(props);
+			result.setOccupantProps(props);
 		} else if (position.getOccupyingContainer() != null) {
 			result.setOccuypingEntity("container");
 			result.setOccupyingEntityId(position.getOccupyingContainer().getId());

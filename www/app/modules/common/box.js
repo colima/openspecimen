@@ -122,7 +122,7 @@ angular.module('os.common.box', [])
         var cellDesc = $("<a class='slot-desc'/>")
           .attr('title', opts.occupantName(occupant));
 
-          if (opts.occupantDisplayHtml) {
+          if (typeof opts.occupantDisplayHtml == 'function') {
             cellDesc.append(opts.occupantDisplayHtml(occupant));
           } else {
             cellDesc.append(opts.occupantName(occupant));

@@ -40,7 +40,6 @@ public class SpecimenTypePropsServiceImpl implements SpecimenTypePropsService {
 			}
 
 			return ResponseEvent.response(props);
-
 		} catch (OpenSpecimenException ose) {
 			return ResponseEvent.error(ose);
 		} catch (Exception e) {
@@ -49,17 +48,17 @@ public class SpecimenTypePropsServiceImpl implements SpecimenTypePropsService {
 	}
 
 	private SpecimenTypeProps getSpecimenTypeProps(PermissibleValue pv) {
+		Map<String, String> props = new HashMap<>();
+		props.put("icon",                getProperty(pv, "icon"));
+		props.put("abbreviation",        getProperty(pv, "abbreviation"));
+		props.put("qtyUnit",             getProperty(pv, "quantity_unit"));
+		props.put("qtyHtmlDisplayCode",  getProperty(pv, "quantity_display_unit"));
+		props.put("concUnit",            getProperty(pv, "concentration_unit"));
+		props.put("concHtmlDisplayCode", getProperty(pv, "concentration_display_unit"));
+
 		SpecimenTypeProps detail = new SpecimenTypeProps();
 		detail.setSpecimenClass(pv.getParent().getValue());
 		detail.setSpecimenType(pv.getValue());
-
-		Map<String, String> props = new HashMap<String, String>();
-		props.put("icon", getProperty(pv, "icon"));
-		props.put("abbreviation", getProperty(pv, "abbreviation"));
-		props.put("qtyUnit", getProperty(pv, "quantity_unit"));
-		props.put("qtyHtmlDisplayCode", getProperty(pv, "quantity_display_unit"));
-		props.put("concUnit", getProperty(pv, "concentration_unit"));
-		props.put("concHtmlDisplayCode", getProperty(pv, "concentration_display_unit"));
 		detail.setProps(props);
 		return detail;
 	}

@@ -4,7 +4,7 @@ angular.module('os.biospecimen.common.specimenprops', [])
     var specimenPropsMap = undefined;
 
     function initCall() {
-      callQ = $http.get(ApiUrls.getBaseUrl() + '/specimen-type-props/');
+      callQ = $http.get(ApiUrls.getBaseUrl() + '/specimen-type-props');
       return callQ;
     }
 
@@ -12,17 +12,18 @@ angular.module('os.biospecimen.common.specimenprops', [])
       return callQ.then(
         function(result) {
           var tempMap = {};
-          angular.forEach(result.data, function(prop) {
-            var clsProps = tempMap[prop.specimenClass];
-            if (!clsProps) {
-              tempMap[prop.specimenClass] = clsProps = {};
+          angular.forEach(result.data,
+            function(prop) {
+              var clsProps = tempMap[prop.specimenClass];
+              if (!clsProps) {
+                tempMap[prop.specimenClass] = clsProps = {};
+              }
+
+              clsProps[prop.specimenType] = prop;
             }
+          );
 
-            clsProps[prop.specimenType] = prop;
-          });
-
-          specimenPropsMap = tempMap;
-          return specimenPropsMap;
+          return (specimenPropsMap = tempMap);
         }
       )
     }
@@ -56,8 +57,8 @@ angular.module('os.biospecimen.common.specimenprops', [])
 
       initPropsMap().then(
         function() {
-          var unit = getPropsFromMap(cls, type);
-          d.resolve(unit);
+          var props = getPropsFromMap(cls, type);
+          d.resolve(props);
         }
       );
 
@@ -79,8 +80,8 @@ angular.module('os.biospecimen.common.specimenprops', [])
         type: '='
       },
 
-      link : function (scope, element, attrs) {
-        scope.specimenProps = undefined;
+      link: function (scope, element, attrs) {
+        scope.specimenProps = {};
         SpecimenPropsSvc.getProps(scope.specimenClass, scope.type).then(
           function(props) {
             scope.specimenProps = props;
@@ -90,9 +91,9 @@ angular.module('os.biospecimen.common.specimenprops', [])
 
       template: '<span ng-switch on="!!specimenProps.props.icon" class="os-icon-wrapper">' +
                 '  <span ng-switch-when="true" class="{{specimenProps.props.icon}}"></span>' +
-                '  <span ng-switch-default="true" class="os-specimen-icon">{{specimenProps.props.abbreviation}}</span>' +
+                '  <span ng-switch-default>{{specimenProps.props.abbreviation}}</span>' +
                 '</span>'
-    };
+    }
   })
   .directive('osSpecimenUnit', function(SpecimenPropsSvc) {
     return {

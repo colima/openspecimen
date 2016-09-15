@@ -33,11 +33,11 @@ angular.module('os.administrative.container.util', ['os.common.box'])
           return occupant.occupyingEntityName;
         },
         occupantDisplayHtml: function(occupant) {
-          if (occupant.occuypingEntity == 'specimen' && !!occupant.occupyingEntityProps) {
-            return $("<os-specimen-icon " +
-              "specimen-class=\"'" + occupant.occupyingEntityProps.class +"'\" " +
-              "type=\"'" + occupant.occupyingEntityProps.type + "'\" " +
-              "title=\"" + occupant.occupyingEntityName + "\"/>");
+          if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps) {
+            return angular.element('<os-specimen-icon ' +
+              'specimen-class="' + occupant.occupantProps.specimenClass + '" ' +
+              'type="' + occupant.occupantProps.type + '" ' +
+              'title="' + occupant.occupyingEntityName + '"/>');
           }
 
           return occupant.occupyingEntityName;

@@ -20,13 +20,13 @@ import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 public class SpecimenTypePropsController {
 
 	@Autowired
-	private SpecimenTypePropsService specTypePropsSvc;
+	private SpecimenTypePropsService spmnTypePropsSvc;
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public List<SpecimenTypeProps> getProps() {
-		ResponseEvent<List<SpecimenTypeProps>> resp = specTypePropsSvc.getProps();
+		ResponseEvent<List<SpecimenTypeProps>> resp = spmnTypePropsSvc.getProps();
 		resp.throwErrorIfUnsuccessful();
 		return resp.getPayload();
 	}
