@@ -97,6 +97,10 @@ angular.module('openspecimen')
             var thisEditor = ctrls[1];
             scope.editor = thisEditor;
             thisEditor.editValue = thisEditor.viewValue = scope.viewValue;
+
+            scope.$watch('viewValue', function(newValue) {
+              thisEditor.editValue = thisEditor.viewValue = newValue;
+            });
           },
 
           post: function(scope, element, attrs, ctrls) {

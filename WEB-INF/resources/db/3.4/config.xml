@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+  <changeSet author="vlonushte" id="Configuration for patient registration wheather it is single or two step process">
+    <sql>
+      call add_cfg_prop(
+      'biospecimen', 'patient_registration',
+      'patient_registration', 'patient_registration_desc',
+      'STRING', 'single'
+      );
+    </sql>
+  </changeSet>
+</databaseChangeLog>

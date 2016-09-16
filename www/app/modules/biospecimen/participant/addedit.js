@@ -1,14 +1,16 @@
 
 angular.module('os.biospecimen.participant.addedit', ['os.biospecimen.models', 'os.administrative.models'])
   .controller('ParticipantAddEditCtrl', function(
-    $scope, $state, $stateParams, $translate, $modal, cp, cpr, extensionCtxt, hasDict,
+    $scope, $state, $stateParams, $translate, $modal, cp, cpr, extensionCtxt, hasDict, patientRegistration,
     CollectionProtocolRegistration, Participant,
     Site, PvManager, ExtensionsUtil) {
 
     var availableSites = [];
+    var lookupParticipant = null;
 
     function init() {
       $scope.cpId = $stateParams.cpId;
+      $scope.twoStepProcess = !cpr.id && patientRegistration.value == 'two';
       $scope.pid = undefined;
       $scope.allowIgnoreMatches = true;
 
@@ -119,8 +121,10 @@ angular.module('os.biospecimen.participant.addedit', ['os.biospecimen.models', '
                 break;
               }
             } 
+
             $scope.allowIgnoreMatches = participant.id || $scope.allowIgnoreMatches;
             $scope.matchedParticipants = result;
+            lookupParticipant = $scope.cpr.participant; 
           }
         );
       }
@@ -132,15 +136,18 @@ angular.module('os.biospecimen.participant.addedit', ['os.biospecimen.models', '
 
     $scope.selectParticipant = function(participant) {
       $scope.selectedParticipant = participant;
+      $scope.cpr.participant = participant;
     };
 
     $scope.lookupAgain = function() {
+      $scope.cpr.participant = lookupParticipant;
       $scope.matchedParticipants = undefined;
       $scope.selectedParticipant = undefined;
       $scope.allowIgnoreMatches = true;
     };
 
     $scope.ignoreMatchesAndRegister = function() {
+      $scope.cpr.participant = lookupParticipant;
       registerParticipant();
     };
 
@@ -166,6 +173,23 @@ angular.module('os.biospecimen.participant.addedit', ['os.biospecimen.models', '
       modalInstance.result.then(
         function() {
           $scope.registerUsingSelectedParticipant(); 
+        }
+      );
+    }
+
+    $scope.lookup = function() {
+      var participant = $scope.cpr.participant;
+      participant.getMatchingParticipants().then(
+        function(result) {
+          if (!result || result.length == 0) {
+            $scope.twoStepProcess = false;
+          } else {
+            $scope.allowIgnoreMatches = false;
+            $scope.matchedParticipants = result;
+
+            lookupParticipant = $scope.cpr.participant; 
+            $scope.selectParticipant(result[0].participant);
+          }
         }
       );
     }

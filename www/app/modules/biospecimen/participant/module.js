@@ -299,6 +299,9 @@ angular.module('os.biospecimen.participant',
         resolve: {
           extensionCtxt: function(cp, Participant) {
             return Participant.getExtensionCtxt({cpId: cp.id});
+          },
+          patientRegistration: function(SettingUtil) {
+            return SettingUtil.getSetting('biospecimen', 'patient_registration');
           }
         },
         parent: 'participant-root'

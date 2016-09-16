@@ -382,6 +382,7 @@
       "merge_participants": "Merge Participants",
       "ignore_matches": "Ignore Matches and Proceed",
       "lookup_again": "Lookup Again",
+      "lookup": "Lookup",
       "bulk_register": "Bulk Register",
       "specimen_catalog": "Specimen Catalog",
       "import": "Import"
@@ -1904,7 +1905,9 @@
         "sys_workflows": "System Workflows",
         "sys_workflows_desc": "System level participants and specimens list view configuration. This configuration is used when CP specific configuration is not specified",
         "pending_spmns_disp_interval": "Anticipated Specimens Display Interval",
-        "pending_spmns_disp_interval_desc": "Anticipated specimens will be automatically hidden in specimen tree after specified number of days have elapsed since collection of parent specimen or visit"
+        "pending_spmns_disp_interval_desc": "Anticipated specimens will be automatically hidden in specimen tree after specified number of days have elapsed since collection of parent specimen or visit",
+        "patient_registration": "Patient Registration",
+        "patient_registration_desc": "Set patient registration process, wheather it is single or two step process"
       },
 
       "common": {
