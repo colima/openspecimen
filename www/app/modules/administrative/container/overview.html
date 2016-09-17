@@ -84,6 +84,13 @@
             <span ng-switch-default translate="common.no">No</span>
           </span>
         </li>
+
+        <li class="item" ng-if="!ctx.container.storageLocation">
+          <strong class="key key-sm" translate="container.spmn_display_prop">Specimen Display Property</strong>
+          <span class="value value-md">
+            {{'container.spmn_display_props.' + ctx.container.calcSpecimenDisplayProp | translate}}
+          </span>
+        </li>
   
         <li class="item">
           <strong class="key key-sm" translate="container.collection_protocol">Collection Protocols</strong>

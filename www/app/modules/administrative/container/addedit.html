@@ -196,6 +196,22 @@
       </div>
     </div>
 
+    <div class="form-group" ng-if="isRootLevelContainer()">
+      <label class="col-xs-3 control-label">
+        <span translate="container.spmn_display_prop">Specimen Display Property</span>
+      </label>
+      <div class="col-xs-9">
+        <label class="radio-inline">
+          <input type="radio" name="spmnDisplayProp" ng-model="container.specimenDisplayProp" ng-value="'SPECIMEN_LABEL'">
+          <span translate="container.spmn_display_props.SPECIMEN_LABEL">Specimen Label</span>
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="spmnDisplayProp" ng-model="container.specimenDisplayProp" ng-value="'PPID'">
+          <span translate="container.spmn_display_props.PPID">PPID</span>
+        </label>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="col-xs-3 control-label">
         <span translate="container.collection_protocol">Collection Protocol</span>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.krishagni.catissueplus.core.administrative.domain.StorageContainer;
 import com.krishagni.catissueplus.core.administrative.domain.StorageContainerPosition;
 import com.krishagni.catissueplus.core.biospecimen.domain.Specimen;
 
@@ -182,6 +183,10 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 			Map<String, Object> props = new HashMap<>();
 			props.put("specimenClass", specimen.getSpecimenClass());
 			props.put("type",          specimen.getSpecimenType());
+
+			if (position.getContainer().getSpecimenDisplayPropToUse() == StorageContainer.SpecimenDisplayProp.PPID) {
+				props.put("ppid", specimen.getVisit().getRegistration().getPpid());
+			}
 
 			result.setOccuypingEntity("specimen");
 			result.setOccupyingEntityId(specimen.getId());

@@ -1053,6 +1053,11 @@
       "LINEAR": "Linear",
       "TWO_D" : "Row and Column"
     },
+    "spmn_display_prop": "Specimen Display Property",
+    "spmn_display_props": {
+      "SPECIMEN_LABEL": "Specimen Label",
+      "PPID": "PPID"
+    },
 
     "replication_count": "Enter number of containers to create",
     "no_repl_dest": "No target site or parent container specified. Add one by clicking Add Another",

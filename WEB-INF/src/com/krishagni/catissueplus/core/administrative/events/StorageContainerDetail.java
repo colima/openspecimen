@@ -11,9 +11,13 @@ import com.krishagni.catissueplus.core.common.ListenAttributeChanges;
 @ListenAttributeChanges
 public class StorageContainerDetail extends StorageContainerSummary {
 	private Double temperature;
+
+	private String specimenDisplayProp;
+
+	private String calcSpecimenDisplayProp;
 	
 	private String comments;
-	
+
 	private Set<String> allowedSpecimenClasses = new HashSet<String>();
 	
 	private Set<String> calcAllowedSpecimenClasses = new HashSet<String>();
@@ -25,7 +29,7 @@ public class StorageContainerDetail extends StorageContainerSummary {
 	private Set<String> allowedCollectionProtocols = new HashSet<String>();
 	
 	private Set<String> calcAllowedCollectionProtocols = new HashSet<String>();
-	
+
 	private Set<Integer> occupiedPositions = new HashSet<Integer>();
 
 	public Double getTemperature() {
@@ -34,6 +38,22 @@ public class StorageContainerDetail extends StorageContainerSummary {
 
 	public void setTemperature(Double temperature) {
 		this.temperature = temperature;
+	}
+
+	public String getSpecimenDisplayProp() {
+		return specimenDisplayProp;
+	}
+
+	public void setSpecimenDisplayProp(String specimenDisplayProp) {
+		this.specimenDisplayProp = specimenDisplayProp;
+	}
+
+	public String getCalcSpecimenDisplayProp() {
+		return calcSpecimenDisplayProp;
+	}
+
+	public void setCalcSpecimenDisplayProp(String calcSpecimenDisplayProp) {
+		this.calcSpecimenDisplayProp = calcSpecimenDisplayProp;
 	}
 
 	public String getComments() {
@@ -115,6 +135,12 @@ public class StorageContainerDetail extends StorageContainerSummary {
 		result.setCalcAllowedCollectionProtocols(getCpNames(container.getCompAllowedCps()));
 		
 		result.setOccupiedPositions(container.occupiedPositionsOrdinals());
+
+		if (container.getSpecimenDisplayProp() != null) {
+			result.setSpecimenDisplayProp(container.getSpecimenDisplayProp().name());
+		}
+		result.setCalcSpecimenDisplayProp(container.getSpecimenDisplayPropToUse().name());
+
 		return result;
 	}
 	

@@ -73,6 +73,7 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		setActivityStatus(detail, existing, container, ose);
 		setComments(detail, existing, container, ose);
 		setStoreSpecimenEnabled(detail, existing, container, ose);
+		setSpecimenDisplayProp(detail, existing, container, ose);
 		setAllowedSpecimenClasses(detail, existing, container, ose);
 		setAllowedSpecimenTypes(detail, existing, container, ose);
 		setAllowedCps(detail, existing, container, ose);
@@ -89,6 +90,7 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		detail.setName(name);
 		detail.setSiteName(input.getSiteName());
 		detail.setStorageLocation(input.getStorageLocation());
+		detail.setSpecimenDisplayProp(input.getSpecimenDisplayProp());
 		detail.setAllowedSpecimenClasses(input.getAllowedSpecimenClasses());
 		detail.setAllowedSpecimenTypes(input.getAllowedSpecimenTypes());
 		detail.setAllowedCollectionProtocols(input.getAllowedCollectionProtocols());
@@ -389,6 +391,34 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		
 		container.setParentContainer(parentContainer);
 		return parentContainer;
+	}
+
+	private void setSpecimenDisplayProp(StorageContainerDetail detail, StorageContainer container, OpenSpecimenException ose) {
+		if (container.getParentContainer() != null) {
+			return;
+		}
+
+		StorageContainer.SpecimenDisplayProp prop = null;
+		if (StringUtils.isBlank(detail.getSpecimenDisplayProp())) {
+			prop = StorageContainer.SpecimenDisplayProp.SPECIMEN_LABEL;
+		} else {
+			try {
+				prop = StorageContainer.SpecimenDisplayProp.valueOf(detail.getSpecimenDisplayProp());
+			} catch (IllegalArgumentException iae) {
+				ose.addError(StorageContainerErrorCode.INVALID_SPMN_DISPLAY_PROP, detail.getSpecimenDisplayProp());
+				return;
+			}
+		}
+
+		container.setSpecimenDisplayProp(prop);
+	}
+
+	private void setSpecimenDisplayProp(StorageContainerDetail detail, StorageContainer existing, StorageContainer container, OpenSpecimenException ose) {
+		if (detail.isAttrModified("occupyingSpecimenDisplayProp") || existing == null) {
+			setSpecimenDisplayProp(detail, container, ose);
+		} else {
+			container.setSpecimenDisplayProp(existing.getSpecimenDisplayProp());
+		}
 	}
 	
 	private void setPosition(StorageContainerDetail detail, StorageContainer container, OpenSpecimenException ose) {

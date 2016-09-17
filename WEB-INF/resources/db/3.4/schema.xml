@@ -41,4 +41,11 @@
         p.occupying_specimen_id is not null
     </createView>
   </changeSet>
+
+  <changeSet author="vgaikwad" id="Setting specifying which property to be shown in container map for specimen">
+    <addColumn tableName="OS_STORAGE_CONTAINERS">
+      <column name="SPMN_DISPLAY_PROP" type="${text.type}(16)">
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

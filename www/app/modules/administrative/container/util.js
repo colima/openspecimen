@@ -14,6 +14,15 @@ angular.module('os.administrative.container.util', ['os.common.box'])
       };
     }
 
+    function getOccupantName(occupant, container) {
+      if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps &&
+        container.calcSpecimenDisplayProp == 'PPID') {
+        return occupant.occupantProps.ppid;
+      }
+
+      return occupant.occupyingEntityName;
+    }
+
     function getOpts(container, allowClicks, showAddMarker) {
       return {
         box: {
@@ -30,14 +39,21 @@ angular.module('os.administrative.container.util', ['os.common.box'])
 
         occupants: [],
         occupantName: function(occupant) {
-          return occupant.occupyingEntityName;
+          return getOccupantName(occupant, container);
         },
-        occupantDisplayHtml: function(occupant) {
+        occupantDisplayHtml: function(occupant, cellDesc) {
           if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps) {
-            return angular.element('<os-specimen-icon ' +
-              'specimen-class="' + occupant.occupantProps.specimenClass + '" ' +
-              'type="' + occupant.occupantProps.type + '" ' +
-              'title="' + occupant.occupyingEntityName + '"/>');
+            // Removed existing class to show icon and label separately
+            cellDesc.removeAttr('class');
+
+            var icon = angular.element('<div class="slot-icon"/>');
+            icon.append(angular.element('<os-specimen-icon ' +
+              'specimen-class="\'' + occupant.occupantProps.specimenClass +'\'" ' +
+              'type="\'' + occupant.occupantProps.type + '\'"/>'));
+
+            var label = $("<div class='slot-label'/>");
+            label.append(getOccupantName(occupant, container));
+            return cellDesc.append(icon).append(label);
           }
 
           return occupant.occupyingEntityName;

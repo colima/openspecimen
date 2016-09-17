@@ -48,6 +48,11 @@ public class StorageContainer extends BaseEntity {
 		TWO_D
 	}
 
+	public enum SpecimenDisplayProp {
+		PPID,
+		SPECIMEN_LABEL
+	}
+
 	private String name;
 
 	private String barcode;
@@ -69,6 +74,8 @@ public class StorageContainer extends BaseEntity {
 	private Site site;
 
 	private StorageContainer parentContainer;
+
+	private SpecimenDisplayProp specimenDisplayProp;
 
 	private User createdBy;
 
@@ -231,6 +238,23 @@ public class StorageContainer extends BaseEntity {
 				descendent.getAncestorContainers().addAll(parentContainer.getAncestorContainers());
 			}
 		}
+	}
+
+	public SpecimenDisplayProp getSpecimenDisplayProp() {
+		return specimenDisplayProp;
+	}
+
+	public SpecimenDisplayProp getSpecimenDisplayPropToUse() {
+		SpecimenDisplayProp prop = specimenDisplayProp;
+		if (parentContainer != null) {
+			prop = parentContainer.getSpecimenDisplayPropToUse();
+		}
+
+		return prop != null ? prop : SpecimenDisplayProp.SPECIMEN_LABEL;
+	}
+
+	public void setSpecimenDisplayProp(SpecimenDisplayProp specimenDisplayProp) {
+		this.specimenDisplayProp = specimenDisplayProp;
 	}
 
 	public User getCreatedBy() {
@@ -403,7 +427,8 @@ public class StorageContainer extends BaseEntity {
 		updateAllowedSpecimenClassAndTypes(other.getAllowedSpecimenClasses(), other.getAllowedSpecimenTypes(), hasParentChanged);
 		updateAllowedCps(other.getAllowedCps(), hasParentChanged);
 		updateStoreSpecimenEnabled(other.isStoreSpecimenEnabled());
-		
+		updateSpecimenDisplayProp(other.getSpecimenDisplayProp());
+
 		validateRestrictions();
 	}
 	
@@ -765,6 +790,7 @@ public class StorageContainer extends BaseEntity {
 		copy.setRowLabelingScheme(getRowLabelingScheme());
 		copy.setTemperature(getTemperature());
 		copy.setStoreSpecimenEnabled(isStoreSpecimenEnabled());
+		copy.setSpecimenDisplayProp(getSpecimenDisplayProp());
 		copy.setComments(getComments());
 		copy.setCreatedBy(getCreatedBy());
 		copy.setAllowedSpecimenClasses(new HashSet<>(getAllowedSpecimenClasses()));
@@ -1026,6 +1052,10 @@ public class StorageContainer extends BaseEntity {
 	
 	private void updateStoreSpecimenEnabled(boolean newStoreSpecimenEnabled) {
 		this.storeSpecimenEnabled = newStoreSpecimenEnabled;
+	}
+
+	private void updateSpecimenDisplayProp(SpecimenDisplayProp specimenDisplayProp) {
+		this.specimenDisplayProp = specimenDisplayProp;
 	}
 		
 	private boolean arePositionsOccupiedBeyondCapacity(int noOfCols, int noOfRows) {

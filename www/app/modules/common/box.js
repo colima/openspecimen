@@ -123,7 +123,7 @@ angular.module('os.common.box', [])
           .attr('title', opts.occupantName(occupant));
 
           if (typeof opts.occupantDisplayHtml == 'function') {
-            cellDesc.append(opts.occupantDisplayHtml(occupant));
+            cellDesc.append(opts.occupantDisplayHtml(occupant, cellDesc));
           } else {
             cellDesc.append(opts.occupantName(occupant));
           }

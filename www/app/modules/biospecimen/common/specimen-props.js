@@ -89,9 +89,9 @@ angular.module('os.biospecimen.common.specimenprops', [])
         )
       },
 
-      template: '<span ng-switch on="!!specimenProps.props.icon" class="os-icon-wrapper">' +
+      template: '<span ng-switch on="!!specimenProps.props.icon">' +
                 '  <span ng-switch-when="true" class="{{specimenProps.props.icon}}"></span>' +
-                '  <span ng-switch-default>{{specimenProps.props.abbreviation}}</span>' +
+                '  <span ng-switch-default class="os-specimen-icon">{{specimenProps.props.abbreviation}}</span>' +
                 '</span>'
     }
   })
