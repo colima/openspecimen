@@ -14,8 +14,9 @@ angular.module('os.administrative.container.util', ['os.common.box'])
       };
     }
 
-    function getOccupantName(container, occupant) {
-      if (occupant.occuypingEntity == 'specimen' && container.cellDisplayProp == 'SPECIMEN_PPID') {
+    function getOccupantName(container, occupant, returnName) {
+      if (occupant.occuypingEntity == 'specimen' && !returnName &&
+        !!occupant.occupantProps && container.cellDisplayProp == 'SPECIMEN_PPID') {
         return occupant.occupantProps.ppid;
       }
 
@@ -37,8 +38,8 @@ angular.module('os.administrative.container.util', ['os.common.box'])
         },
 
         occupants: [],
-        occupantName: function(occupant) {
-          return getOccupantName(container, occupant);
+        occupantName: function(occupant, returnName) {
+          return getOccupantName(container, occupant, returnName);
         },
         occupantDisplayHtml: function(occupant) {
           if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps) {
