@@ -159,6 +159,15 @@
   width: 30%;
 }
 
+.os-container-map .slot-icon .os-spmn-icon-wrapper .abbr {
+  background-color: #3a87ad;
+  color: white;
+  padding: 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .os-container-map .slot-label {
   text-overflow: ellipsis;
   white-space: nowrap;

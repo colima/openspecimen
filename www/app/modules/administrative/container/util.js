@@ -14,9 +14,8 @@ angular.module('os.administrative.container.util', ['os.common.box'])
       };
     }
 
-    function getOccupantName(occupant, container) {
-      if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps &&
-        container.calcSpecimenDisplayProp == 'PPID') {
+    function getOccupantName(container, occupant) {
+      if (occupant.occuypingEntity == 'specimen' && container.cellDisplayProp == 'SPECIMEN_PPID') {
         return occupant.occupantProps.ppid;
       }
 
@@ -39,24 +38,23 @@ angular.module('os.administrative.container.util', ['os.common.box'])
 
         occupants: [],
         occupantName: function(occupant) {
-          return getOccupantName(occupant, container);
+          return getOccupantName(container, occupant);
         },
-        occupantDisplayHtml: function(occupant, cellDesc) {
+        occupantDisplayHtml: function(occupant) {
           if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps) {
-            // Removed existing class to show icon and label separately
-            cellDesc.removeAttr('class');
+            var icon = angular.element('<div class="slot-icon"/>').append(
+              angular.element('<os-specimen-icon ' +
+                'specimen-class="\'' + occupant.occupantProps.specimenClass + '\'" ' +
+                'type="\'' + occupant.occupantProps.type + '\'"/>')
+            );
 
-            var icon = angular.element('<div class="slot-icon"/>');
-            icon.append(angular.element('<os-specimen-icon ' +
-              'specimen-class="\'' + occupant.occupantProps.specimenClass +'\'" ' +
-              'type="\'' + occupant.occupantProps.type + '\'"/>'));
+            var label = angular.element('<div class="slot-label"/>')
+              .append(getOccupantName(container, occupant));
 
-            var label = $("<div class='slot-label'/>");
-            label.append(getOccupantName(occupant, container));
-            return cellDesc.append(icon).append(label);
+            return angular.element('<div/>').append(icon).append(label);
+          } else {
+            return angular.element('<span class="slot-desc"/>').append(occupant.occupyingEntityName);
           }
-
-          return occupant.occupyingEntityName;
         },
         allowClicks: allowClicks,
         isVacatable: function(occupant) {

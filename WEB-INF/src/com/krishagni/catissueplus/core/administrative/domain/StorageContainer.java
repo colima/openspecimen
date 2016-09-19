@@ -48,8 +48,8 @@ public class StorageContainer extends BaseEntity {
 		TWO_D
 	}
 
-	public enum SpecimenDisplayProp {
-		PPID,
+	public enum CellDisplayProp {
+		SPECIMEN_PPID,
 		SPECIMEN_LABEL
 	}
 
@@ -75,7 +75,7 @@ public class StorageContainer extends BaseEntity {
 
 	private StorageContainer parentContainer;
 
-	private SpecimenDisplayProp specimenDisplayProp;
+	private CellDisplayProp cellDisplayProp;
 
 	private User createdBy;
 
@@ -240,21 +240,12 @@ public class StorageContainer extends BaseEntity {
 		}
 	}
 
-	public SpecimenDisplayProp getSpecimenDisplayProp() {
-		return specimenDisplayProp;
+	public CellDisplayProp getCellDisplayProp() {
+		return cellDisplayProp;
 	}
 
-	public SpecimenDisplayProp getSpecimenDisplayPropToUse() {
-		SpecimenDisplayProp prop = specimenDisplayProp;
-		if (parentContainer != null) {
-			prop = parentContainer.getSpecimenDisplayPropToUse();
-		}
-
-		return prop != null ? prop : SpecimenDisplayProp.SPECIMEN_LABEL;
-	}
-
-	public void setSpecimenDisplayProp(SpecimenDisplayProp specimenDisplayProp) {
-		this.specimenDisplayProp = specimenDisplayProp;
+	public void setCellDisplayProp(CellDisplayProp cellDisplayProp) {
+		this.cellDisplayProp = cellDisplayProp;
 	}
 
 	public User getCreatedBy() {
@@ -427,7 +418,7 @@ public class StorageContainer extends BaseEntity {
 		updateAllowedSpecimenClassAndTypes(other.getAllowedSpecimenClasses(), other.getAllowedSpecimenTypes(), hasParentChanged);
 		updateAllowedCps(other.getAllowedCps(), hasParentChanged);
 		updateStoreSpecimenEnabled(other.isStoreSpecimenEnabled());
-		updateSpecimenDisplayProp(other.getSpecimenDisplayProp());
+		updateCellDisplayProp(other.getCellDisplayProp());
 
 		validateRestrictions();
 	}
@@ -790,7 +781,7 @@ public class StorageContainer extends BaseEntity {
 		copy.setRowLabelingScheme(getRowLabelingScheme());
 		copy.setTemperature(getTemperature());
 		copy.setStoreSpecimenEnabled(isStoreSpecimenEnabled());
-		copy.setSpecimenDisplayProp(getSpecimenDisplayProp());
+		copy.setCellDisplayProp(getCellDisplayProp());
 		copy.setComments(getComments());
 		copy.setCreatedBy(getCreatedBy());
 		copy.setAllowedSpecimenClasses(new HashSet<>(getAllowedSpecimenClasses()));
@@ -1054,8 +1045,19 @@ public class StorageContainer extends BaseEntity {
 		this.storeSpecimenEnabled = newStoreSpecimenEnabled;
 	}
 
-	private void updateSpecimenDisplayProp(SpecimenDisplayProp specimenDisplayProp) {
-		this.specimenDisplayProp = specimenDisplayProp;
+	private void updateCellDisplayProp(CellDisplayProp cellDisplayProp) {
+		if (this.cellDisplayProp == cellDisplayProp || getParentContainer() != null) {
+			return;
+		}
+
+		updateCellDisplayProp(this, cellDisplayProp);
+	}
+
+	private void updateCellDisplayProp(StorageContainer container, CellDisplayProp cellDisplayProp) {
+		container.setCellDisplayProp(cellDisplayProp);
+		for (StorageContainer childContainer : container.getChildContainers()) {
+			updateCellDisplayProp(childContainer, cellDisplayProp);
+		}
 	}
 		
 	private boolean arePositionsOccupiedBeyondCapacity(int noOfCols, int noOfRows) {

@@ -183,8 +183,10 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 			Map<String, Object> props = new HashMap<>();
 			props.put("specimenClass", specimen.getSpecimenClass());
 			props.put("type",          specimen.getSpecimenType());
-
-			if (position.getContainer().getSpecimenDisplayPropToUse() == StorageContainer.SpecimenDisplayProp.PPID) {
+			if (position.getContainer().getCellDisplayProp() == StorageContainer.CellDisplayProp.SPECIMEN_PPID) {
+				//
+				// PPID is populated on demand because of its potential performance impact
+				//
 				props.put("ppid", specimen.getVisit().getRegistration().getPpid());
 			}
 

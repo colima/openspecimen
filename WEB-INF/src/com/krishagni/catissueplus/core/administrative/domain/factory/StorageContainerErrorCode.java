@@ -58,7 +58,7 @@ public enum StorageContainerErrorCode implements ErrorCode {
 
 	INCORRECT_NAME_FMT,
 
-	INVALID_SPMN_DISPLAY_PROP;
+	INVALID_CELL_DISP_PROP;
 
 	@Override
 	public String code() {

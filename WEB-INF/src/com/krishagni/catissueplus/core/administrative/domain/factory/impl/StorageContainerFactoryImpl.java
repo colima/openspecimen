@@ -73,7 +73,7 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		setActivityStatus(detail, existing, container, ose);
 		setComments(detail, existing, container, ose);
 		setStoreSpecimenEnabled(detail, existing, container, ose);
-		setSpecimenDisplayProp(detail, existing, container, ose);
+		setCellDisplayProp(detail, existing, container, ose);
 		setAllowedSpecimenClasses(detail, existing, container, ose);
 		setAllowedSpecimenTypes(detail, existing, container, ose);
 		setAllowedCps(detail, existing, container, ose);
@@ -90,7 +90,7 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		detail.setName(name);
 		detail.setSiteName(input.getSiteName());
 		detail.setStorageLocation(input.getStorageLocation());
-		detail.setSpecimenDisplayProp(input.getSpecimenDisplayProp());
+		detail.setCellDisplayProp(input.getCellDisplayProp());
 		detail.setAllowedSpecimenClasses(input.getAllowedSpecimenClasses());
 		detail.setAllowedSpecimenTypes(input.getAllowedSpecimenTypes());
 		detail.setAllowedCollectionProtocols(input.getAllowedCollectionProtocols());
@@ -393,31 +393,30 @@ public class StorageContainerFactoryImpl implements StorageContainerFactory {
 		return parentContainer;
 	}
 
-	private void setSpecimenDisplayProp(StorageContainerDetail detail, StorageContainer container, OpenSpecimenException ose) {
+	private void setCellDisplayProp(StorageContainerDetail detail, StorageContainer container, OpenSpecimenException ose) {
 		if (container.getParentContainer() != null) {
+			container.setCellDisplayProp(container.getParentContainer().getCellDisplayProp());
 			return;
 		}
 
-		StorageContainer.SpecimenDisplayProp prop = null;
-		if (StringUtils.isBlank(detail.getSpecimenDisplayProp())) {
-			prop = StorageContainer.SpecimenDisplayProp.SPECIMEN_LABEL;
-		} else {
+		StorageContainer.CellDisplayProp prop = StorageContainer.CellDisplayProp.SPECIMEN_LABEL;
+		if (StringUtils.isNotBlank(detail.getCellDisplayProp())) {
 			try {
-				prop = StorageContainer.SpecimenDisplayProp.valueOf(detail.getSpecimenDisplayProp());
+				prop = StorageContainer.CellDisplayProp.valueOf(detail.getCellDisplayProp());
 			} catch (IllegalArgumentException iae) {
-				ose.addError(StorageContainerErrorCode.INVALID_SPMN_DISPLAY_PROP, detail.getSpecimenDisplayProp());
+				ose.addError(StorageContainerErrorCode.INVALID_CELL_DISP_PROP, detail.getCellDisplayProp());
 				return;
 			}
 		}
 
-		container.setSpecimenDisplayProp(prop);
+		container.setCellDisplayProp(prop);
 	}
 
-	private void setSpecimenDisplayProp(StorageContainerDetail detail, StorageContainer existing, StorageContainer container, OpenSpecimenException ose) {
-		if (detail.isAttrModified("occupyingSpecimenDisplayProp") || existing == null) {
-			setSpecimenDisplayProp(detail, container, ose);
+	private void setCellDisplayProp(StorageContainerDetail detail, StorageContainer existing, StorageContainer container, OpenSpecimenException ose) {
+		if (detail.isAttrModified("cellDisplayProp") || existing == null) {
+			setCellDisplayProp(detail, container, ose);
 		} else {
-			container.setSpecimenDisplayProp(existing.getSpecimenDisplayProp());
+			container.setCellDisplayProp(existing.getCellDisplayProp());
 		}
 	}
 	

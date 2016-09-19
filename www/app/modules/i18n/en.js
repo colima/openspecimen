@@ -1053,10 +1053,10 @@
       "LINEAR": "Linear",
       "TWO_D" : "Row and Column"
     },
-    "spmn_display_prop": "Specimen Display Property",
-    "spmn_display_props": {
-      "SPECIMEN_LABEL": "Specimen Label",
-      "PPID": "PPID"
+    "cell_display_prop": "Display",
+    "cell_display_props": {
+      "SPECIMEN_LABEL": "Specimen Labels",
+      "SPECIMEN_PPID" : "PPIDs"
     },
 
     "replication_count": "Enter number of containers to create",

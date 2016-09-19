@@ -42,10 +42,9 @@
     </createView>
   </changeSet>
 
-  <changeSet author="vgaikwad" id="Setting specifying which property to be shown in container map for specimen">
+  <changeSet author="vgaikwad" id="Setting specifying occupant property value to be displayed in container map">
     <addColumn tableName="OS_STORAGE_CONTAINERS">
-      <column name="SPMN_DISPLAY_PROP" type="${text.type}(16)">
-      </column>
+      <column name="CELL_DISPLAY_PROP" type="${text.type}(16)"/>
     </addColumn>
   </changeSet>
 </databaseChangeLog>

@@ -283,10 +283,6 @@ angular.module('os.administrative.container.addedit', ['os.administrative.models
       });
     }
 
-    $scope.isRootLevelContainer = function() {
-      return Object.keys($scope.container.storageLocation).length == 0;
-    }
-
     //
     // Multiple container creation logic
     //
