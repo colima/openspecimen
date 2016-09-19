@@ -14,9 +14,8 @@ angular.module('os.administrative.container.util', ['os.common.box'])
       };
     }
 
-    function getOccupantName(container, occupant, returnName) {
-      if (occupant.occuypingEntity == 'specimen' && !returnName &&
-        !!occupant.occupantProps && container.cellDisplayProp == 'SPECIMEN_PPID') {
+    function getOccupantDisplayName(container, occupant) {
+      if (occupant.occuypingEntity == 'specimen' && container.cellDisplayProp == 'SPECIMEN_PPID') {
         return occupant.occupantProps.ppid;
       }
 
@@ -38,8 +37,8 @@ angular.module('os.administrative.container.util', ['os.common.box'])
         },
 
         occupants: [],
-        occupantName: function(occupant, returnName) {
-          return getOccupantName(container, occupant, returnName);
+        occupantName: function(occupant) {
+          return occupant.occupyingEntityName;
         },
         occupantDisplayHtml: function(occupant) {
           if (occupant.occuypingEntity == 'specimen' && !!occupant.occupantProps) {
@@ -49,8 +48,10 @@ angular.module('os.administrative.container.util', ['os.common.box'])
                 'type="\'' + occupant.occupantProps.type + '\'"/>')
             );
 
+            var displayName = getOccupantDisplayName(container, occupant);
             var label = angular.element('<div class="slot-label"/>')
-              .append(getOccupantName(container, occupant));
+              .attr('title', displayName)
+              .append(displayName);
 
             return angular.element('<div/>').append(icon).append(label);
           } else {
