@@ -1046,7 +1046,7 @@ public class StorageContainer extends BaseEntity {
 	}
 
 	private void updateCellDisplayProp(CellDisplayProp cellDisplayProp) {
-		if (this.cellDisplayProp == cellDisplayProp || getParentContainer() != null) {
+		if (getCellDisplayProp() == cellDisplayProp || getParentContainer() != null) {
 			return;
 		}
 

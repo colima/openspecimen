@@ -180,6 +180,7 @@ public class StorageContainerPositionDetail implements Comparable<StorageContain
 		
 		if (position.getOccupyingSpecimen() != null) {
 			Specimen specimen = position.getOccupyingSpecimen();
+
 			Map<String, Object> props = new HashMap<>();
 			props.put("specimenClass", specimen.getSpecimenClass());
 			props.put("type",          specimen.getSpecimenType());
