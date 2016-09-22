@@ -80,7 +80,7 @@ angular.module('os.biospecimen.participant.addedit', ['os.biospecimen.models', '
     };
 
     $scope.pmiText = function(pmi) {
-      return pmi.mrn + " (" + pmi.siteName + ")";
+      return pmi.siteName + (pmi.mrn ? " (" + pmi.mrn + ")" : "");
     }
 
     $scope.addPmiIfLast = function(idx) {
@@ -183,6 +183,7 @@ angular.module('os.biospecimen.participant.addedit', ['os.biospecimen.models', '
         function(result) {
           if (!result || result.length == 0) {
             $scope.twoStepProcess = false;
+            $scope.isLookupFailed = true;
           } else {
             $scope.allowIgnoreMatches = false;
             $scope.matchedParticipants = result;

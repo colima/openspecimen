@@ -361,7 +361,8 @@
       "clear": "Clear response"
      },
 
-    "similar_participants": "Following participants found that are similar to participant being registered/updated",
+    "similar_participants": "Following matching participant(s) found",
+    "no_matching_participant": "No matching participant found",
     "matched_attrs": "Matched Attributes",
     "matching_attr": {
       "empi": "EMPI",
@@ -381,7 +382,6 @@
       "register_selected_participant": "Register Selected Participant",
       "merge_participants": "Merge Participants",
       "ignore_matches": "Ignore Matches and Proceed",
-      "lookup_again": "Lookup Again",
       "lookup": "Lookup",
       "bulk_register": "Bulk Register",
       "specimen_catalog": "Specimen Catalog",

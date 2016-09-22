@@ -37,6 +37,16 @@
 </div>
 
 <script type="text/ng-template" id="modules/biospecimen/participant/single-step-addedit.html">
+  <div class="form-group" ng-if="isLookupFailed">
+    <div class="col-xs-offset-3 col-xs-6">
+      <div class="alert alert-warning os-participant-matching-msg"> 
+        <span translate="participant.no_matching_participant">
+          No matching participant found 
+        </span>
+      </div>
+    </div>
+  </div>
+
   <div> 
     <div ng-switch on="fieldsCtx.hasDict">
       <div ng-switch-when="true">
@@ -280,22 +290,40 @@
     </div>
   </div>
 
-  <div class="form-group" ng-init="pmi = cpr.participant.pmis[0]"> 
-    <label class="col-xs-3 control-label" translate="participant.pmis">Medical Identifiers</label>
-    <div class="col-xs-3">
-      <ui-select name="siteName" ng-model="pmi.siteName" ng-required="!!pmi.mrn">
-        <ui-select-match placeholder="{{'participant.select_site' | translate}}">{{$select.selected}}</ui-select-match>
-        <ui-select-choices repeat="site in sites | filter: $select.search">
-          <span ng-bind-html="site | highlight: $select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-      <div os-field-error field="pform.siteName"></div>
+  <div class="form-group clearfix">
+    <div class="col-xs-offset-3 col-xs-3">
+      <label class="control-label" translate="participant.site">Site</label>
     </div>
+    <div class="col-xs-3">
+      <label class="control-label" translate="participant.mrn">Medical Record Number</label>
+    </div>
+  </div>
 
-    <div class="col-xs-3">
-      <input name="mrn" type="text" ng-model="pmi.mrn" class="form-control" 
-        placeholder="{{'participant.mrn_short' | translate}}">
-    </div>
+  <div class="form-group clearfix" ng-repeat="pmi in cpr.participant.pmis">
+    <ng-form name="pmiForm" os-form-validator="pmiForm" parent-validator="pformValidator"> 
+      <div class="col-xs-3 col-xs-offset-3">
+        <ui-select name="siteName" ng-model="pmi.siteName" 
+          ng-click="addPmiIfLast($index)" ng-required="!!pmi.mrn"
+          on-select="onSiteSelect()">
+          <ui-select-match placeholder="{{'participant.select_site' | translate}}">{{$select.selected}}</ui-select-match>
+          <ui-select-choices repeat="site in sites | filter: $select.search">
+            <span ng-bind-html="site | highlight: $select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+        <div os-field-error field="pmiForm.siteName"></div>
+      </div>
+
+      <div class="col-xs-3">
+        <input name="mrn" type="text" ng-model="pmi.mrn" class="form-control" ng-focus="addPmiIfLast($index)"
+          placeholder="{{'participant.mrn_short' | translate}}">
+      </div>
+
+      <div class="col-xs-1">
+        <button class="btn btn-default pull-right" ng-click="removePmi(pmi)">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
+      </div>
+    </ng-form>
   </div>
 
   <div class="os-divider"></div>
@@ -311,41 +339,39 @@
 </script>
 
 <script type="text/ng-template" id="modules/biospecimen/participant/matched-participants.html">
-  <div ng-if="twoStepProcess && matchedParticipants.length > 1">
-    <div class="alert alert-warning os-participant-matching-msg">
-      <span translate="participant.similar_participants">
-        Following participants found that are similar to participant being registered/updated
-      </span>
-    </div>
-  
-    <div class="os-participant-matching-tbl">
-      <div class="os-table os-table-muted-hdr os-border">
-        <div class="os-table-head">
-          <div class="row">
-            <div class="col os-col-5">&nbsp;</div>
-            <div class="col os-col-15" translate="participant.first_name">First Name</div>
-            <div class="col os-col-15" translate="participant.last_name">Last Name</div>
-            <div class="col os-col-15" translate="participant.birth_date">Birth Date</div>
-            <div class="col os-col-10" translate="participant.uid_short">SSN</div>
-            <div class="col os-col-20" translate="participant.pmis">Medical Identifiers</div>
-            <div class="col os-col-20" translate="participant.matched_attrs">Matched Attributes</div>
-          </div>
+  <div class="alert alert-warning os-participant-matching-msg">
+    <span translate="participant.similar_participants">
+      Following matching participant(s) found 
+    </span>
+  </div>
+
+  <div class="os-participant-matching-tbl" ng-if="!twoStepProcess || matchedParticipants.length > 1">
+    <div class="os-table os-table-muted-hdr os-border">
+      <div class="os-table-head">
+        <div class="row">
+          <div class="col os-col-5">&nbsp;</div>
+          <div class="col os-col-15" translate="participant.first_name">First Name</div>
+          <div class="col os-col-15" translate="participant.last_name">Last Name</div>
+          <div class="col os-col-15" translate="participant.birth_date">Birth Date</div>
+          <div class="col os-col-10" translate="participant.uid_short">SSN</div>
+          <div class="col os-col-20" translate="participant.pmis">Medical Identifiers</div>
+          <div class="col os-col-20" translate="participant.matched_attrs">Matched Attributes</div>
         </div>
-        <div class="os-table-body">
-          <div class="row" ng-repeat="matchedPart in matchedParticipants" 
-            ng-class="{'bg-info': selectedParticipant.id == matchedPart.participant.id}">
-  
-            <div class="col os-col-5">
-              <input type="radio" name="selectedParticipant" ng-checked="selectedParticipant.id == matchedPart.participant.id" 
-                ng-click="selectParticipant(matchedPart.participant)" value="{{matchedPart.participant.id}}">
-            </div>
-            <div class="col os-col-15">{{matchedPart.participant.firstName | osNoValue}}</div>
-            <div class="col os-col-15">{{matchedPart.participant.lastName | osNoValue}}</div>
-            <div class="col os-col-15">{{matchedPart.participant.birthDate | date: global.dateFmt | osNoValue}}</div>
-            <div class="col os-col-10">{{matchedPart.participant.uid | osNoValue}}</div>
-            <div class="col os-col-20">{{matchedPart.participant.pmis | osArrayJoin: pmiText | osNoValue}}</div>
-            <div class="col os-col-20">{{matchedPart.matchedAttrs | osArrayJoin: matchedAttrText}}</div>
+      </div>
+      <div class="os-table-body">
+        <div class="row" ng-repeat="matchedPart in matchedParticipants" 
+          ng-class="{'bg-info': selectedParticipant.id == matchedPart.participant.id}">
+
+          <div class="col os-col-5">
+            <input type="radio" name="selectedParticipant" ng-checked="selectedParticipant.id == matchedPart.participant.id" 
+              ng-click="selectParticipant(matchedPart.participant)" value="{{matchedPart.participant.id}}">
           </div>
+          <div class="col os-col-15">{{matchedPart.participant.firstName | osNoValue}}</div>
+          <div class="col os-col-15">{{matchedPart.participant.lastName | osNoValue}}</div>
+          <div class="col os-col-15">{{matchedPart.participant.birthDate | date: global.dateFmt | osNoValue}}</div>
+          <div class="col os-col-10">{{matchedPart.participant.uid | osNoValue}}</div>
+          <div class="col os-col-20">{{matchedPart.participant.pmis | osArrayJoin: pmiText | osNoValue}}</div>
+          <div class="col os-col-20">{{matchedPart.matchedAttrs | osArrayJoin: matchedAttrText}}</div>
         </div>
       </div>
     </div>
@@ -376,9 +402,9 @@
         Ignore Matches and Proceed 
       </span>
     </button>
-    <button class="btn btn-warning" ng-click="lookupAgain()">
-      <span translate="participant.buttons.lookup_again"> 
-        Lookup Again  
+    <button class="btn os-btn-secondary" ng-click="lookupAgain()">
+      <span translate="common.buttons.previous">
+        Previous
       </span>
     </button>
   </div>
