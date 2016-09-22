@@ -1,5 +1,6 @@
 angular.module('os.administrative.form.formctxts', ['os.administrative.models'])
-  .controller('FormCtxtsCtrl', function($scope, $modalInstance, $translate, args, cpList, entities, Alerts) {
+  .controller('FormCtxtsCtrl', function($scope, $modalInstance, $translate, args, cpList, entities,
+    CollectionProtocol, Alerts) {
 
     var reload = false;
 
@@ -30,6 +31,14 @@ angular.module('os.administrative.form.formctxts', ['os.administrative.models'])
         selectedCps: [],
         selectedEntity: undefined
       }
+    }
+
+    $scope.loadCps = function(searchTitle) {
+      CollectionProtocol.list({detailedList: false, title: searchTitle}).then(
+        function(cps) {
+          $scope.cpList = cps;
+        }
+      );
     }
 
     $scope.enableAttach = function(formCtxt) {

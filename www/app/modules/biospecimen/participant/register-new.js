@@ -1,25 +1,33 @@
-
 angular.module('os.biospecimen.participant.newreg', ['os.biospecimen.models'])
-  .factory('RegisterToNewCpsHolder', function() {
-    var cpList = [];
-
-    return {
-      getCpList: function() { return cpList; },
-      setCpList: function(input) { cpList = input; }
-    };
-  })
   .controller('RegisterNewCtrl', function(
     $scope, $state, cpr, 
-    Participant, CollectionProtocol, CollectionProtocolRegistration,
-    RegisterToNewCpsHolder) {
+    Participant, CollectionProtocol, CollectionProtocolRegistration) {
+    var registeredCps = [];
 
     function init() {
       $scope.cpr = cpr;
       $scope.newCpr = new CollectionProtocolRegistration({registrationDate: new Date()});
-      $scope.cpList = RegisterToNewCpsHolder.getCpList();
-      if ($scope.cpList.length == 1) {
-        $scope.newCpr.cp = $scope.cpList[0];
-      }
+
+      initRegisteredCps();
+    }
+
+    function initRegisteredCps() {
+      angular.forEach(cpr.participant.registeredCps, function(cp) {
+        registeredCps.push(cp.cpShortTitle);
+      });
+    }
+
+    $scope.loadCps = function(searchTitle) {
+      $scope.cpList = [];
+      CollectionProtocol.listForRegistrations($scope.cpr.getMrnSites(), searchTitle).then(
+        function(cps) {
+          for (var i = 0; i < cps.length; ++i) {
+            if (registeredCps.indexOf(cps[i].shortTitle) == -1) {
+              $scope.cpList.push(cps[i]);
+            }
+          }
+        }
+      );
     }
 
     $scope.register = function() {

@@ -2,8 +2,7 @@
 angular.module('os.biospecimen.participant.detail', ['os.biospecimen.models'])
   .controller('ParticipantDetailCtrl', function(
     $scope, $q, cpr, visits, 
-    CollectionProtocol, SpecimenLabelPrinter, 
-    RegisterToNewCpsHolder, DeleteUtil) {
+    CollectionProtocol, SpecimenLabelPrinter, DeleteUtil) {
 
     function loadPvs() {
       var registeredCps = [];
@@ -22,8 +21,6 @@ angular.module('os.biospecimen.participant.detail', ['os.biospecimen.models'])
           }
         }
       );
-
-      RegisterToNewCpsHolder.setCpList($scope.cpsForReg);
     }
 
     function init() {
