@@ -1605,6 +1605,8 @@
     "details": "Order Details",
     "no_specimens_in_list": "No specimens in order list to distribute. Add at least one specimen",
     "enter_specimen_label": "To add specimens to distribution list, enter labels separated by a comma, tab or newline and click add",
+    "confirm_delete_order_title": "Deleting distribution order confirmation",
+    "confirm_delete_order": "Are you sure you want to delete order {{name}} ?",
 
     "report_gen_initiated": "Generating distribution order report...",
     "downloading_report": "Downloading distribution order report...",

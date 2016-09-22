@@ -1,5 +1,5 @@
 angular.module('os.administrative.order.detail', ['os.administrative.models'])
-  .controller('OrderDetailCtrl', function($scope, order, Util, SettingUtil) {
+  .controller('OrderDetailCtrl', function($scope, $state, order, Util, SettingUtil, DeleteUtil) {
   
     function init() {
       $scope.order = order;
@@ -17,6 +17,20 @@ angular.module('os.administrative.order.detail', ['os.administrative.models'])
 
     $scope.downloadReport = function() {
       Util.downloadReport(order, 'orders');
+    };
+
+    $scope.deleteOrder = function() {
+      DeleteUtil.confirmDelete({
+        entity: {name: $scope.order.name},
+        templateUrl: 'modules/administrative/order/delete.html',
+        delete: function() {
+          $scope.order.$remove().then(
+            function(deletedOrder) {
+              $state.go('order-list');
+            }
+          );
+        }
+      });
     };
 
     init();
