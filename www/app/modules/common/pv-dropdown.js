@@ -4,6 +4,7 @@ angular.module('openspecimen')
     function linker(scope, element, attrs, formCtrl) {
       scope.pvs = [];
       scope.reload = true;
+      scope.ngModelListener = null;
 
       if (attrs.parentVal) {
         scope.$watch(attrs.parentVal,
@@ -16,11 +17,26 @@ angular.module('openspecimen')
             loadPvs(formCtrl, scope, null, attrs, newVal);
           }
         );
+      } else if (!attrs.multiple) {
+        scope.ngModelListener = scope.$watch(attrs.ngModel,
+          function(newVal) {
+            if (newVal == undefined) {
+              return;
+            }
+
+            scope.reload = true;
+            scope.searchPvs(newVal);
+          } 
+        );
       }
 
       scope.searchPvs = function(searchTerm) {
         if (scope.reload) {
           loadPvs(formCtrl, scope, searchTerm, attrs);
+        }
+
+        if (scope.ngModelListener) {
+          scope.ngModelListener();
         }
       };
     }
@@ -55,11 +71,11 @@ angular.module('openspecimen')
     }
 
     function _loadPvs(scope, attrs, searchTerm) {
-      return PvManager.loadPvs(attrs.attribute, searchTerm, undefined, attrs.showOnlyLeafValues);
+      return PvManager.loadPvs(attrs.attribute, searchTerm, undefined, attrs.showOnlyLeafValues, true);
     }
 
     function _loadPvsByParent(attrs, parentVal) {
-      return PvManager.loadPvsByParent(attrs.attribute, parentVal);
+      return PvManager.loadPvsByParent(attrs.attribute, parentVal, false, undefined, true);
     }
 
     function setPvs(scope, searchTerm, attrs, pvs) {
@@ -79,6 +95,6 @@ angular.module('openspecimen')
       scope: true,
       replace: true,
       link : linker,
-      template: '<os-select refresh="searchPvs($select.search)" list="pvs"></os-select>'
+      template: '<os-select refresh="searchPvs($select.search)" list="pvs" select-prop="value" display-prop="displayValue"></os-select>'
     };
   });

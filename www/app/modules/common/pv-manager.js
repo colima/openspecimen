@@ -122,20 +122,25 @@ angular.module('openspecimen')
       'cohort'              : 'cohort'
     };
 
-    function valueOf(input) {
-      return input.value;
+    function valueOf(input, incDisplayVal) {
+      if (!incDisplayVal) {
+        return input.value;
+      }
+
+      var displayValue = input.value + ( input.conceptCode ? ' (' + input.conceptCode + ') ' : '' );
+      return angular.extend(input, {displayValue: displayValue});
     };
 
     function parentAndValue(input) {
       return {parent: input.parentValue, value: input.value};
     };
 
-    function transform(pvs, transformfn, incParentVal, result) {
+    function transform(pvs, transformfn, incParentVal, incDisplayVal) {
       transformfn = transformfn || (incParentVal ? parentAndValue : valueOf);
-      return pvs.map(function(pv) { return transformfn(pv); });
+      return pvs.map(function(pv) { return transformfn(pv, incDisplayVal); });
     };
 
-    function loadPvs(attr, srchTerm, transformFn, incOnlyLeaf) {
+    function loadPvs(attr, srchTerm, transformFn, incOnlyLeaf, incDisplayVal) {
       var pvId = pvIdMap[attr];
       if (!pvId && pvMap[attr]) {
         return _getPvs(attr);
@@ -152,12 +157,12 @@ angular.module('openspecimen')
 
       return $http.get(url, {params: params}).then(
         function(result) {
-          return transform(result.data, transformFn, null);
+          return transform(result.data, transformFn, null, incDisplayVal);
         }
       );
     };
 
-    function loadPvsByParent(parentAttr, parentVal, incParentVal, transformFn) {
+    function loadPvsByParent(parentAttr, parentVal, incParentVal, transformFn, incDisplayVal) {
       var pvId = pvIdMap[parentAttr];
       if (!pvId) {
         pvId = parentAttr;
@@ -172,7 +177,7 @@ angular.module('openspecimen')
 
       return $http.get(url, {params: params}).then(
         function(result) {
-          return transform(result.data, transformFn, incParentVal);
+          return transform(result.data, transformFn, incParentVal, incDisplayVal);
         }
       );
     };
