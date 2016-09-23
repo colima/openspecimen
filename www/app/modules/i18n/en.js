@@ -1836,7 +1836,13 @@
         "verify_token_ip_address": "IP Address Validation",
         "verify_token_ip_address_desc": "Check whether requests are made from the same IP address to which the login token was issued.",
         "saml_enable": "Enable SAML authentication",
-        "saml_enable_desc": "Enable single sign on using SAML based identity provider"
+        "saml_enable_desc": "Enable single sign on using SAML based identity provider",
+        "password_expiry_rem_notif": "Password Expiry Reminder",
+        "password_expiry_rem_notif_desc": "Number of days after password will expire once updated.",
+        "password_to_examine": "Password To Examine",
+        "password_to_examine_desc": "Number of continuous previous password should not be repeated.",
+        "password_pattern": "Password Pattern",
+        "password_pattern_desc": "Regex pattern for at least one capital letter, one small letters and one number."
       },
       
       "administrative": {

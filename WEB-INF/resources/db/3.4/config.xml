@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog 
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+  <changeSet author="mdnasim" id="Creating scheduled job for password expiry notification" dbms="mysql">
+    <sql>
+      select identifier into @userId from catissue_user where login_name = '$system';
+      
+      insert into os_scheduled_jobs
+        (identifier, name, created_by, start_date, end_date, scheduled_minute, scheduled_hour, scheduled_day_of_week, 
+        scheduled_day_of_month, activity_status, repeat_schedule, type, command, task_impl_fqn, rt_args_provided, rt_args_help_text)
+      values
+        (default, 'Password Expiry Notification', @userId, now(), null, 30, 00, null, 
+        null, 'Active', 'DAILY', 'INTERNAL', null, 'com.krishagni.catissueplus.core.auth.services.impl.PasswordExpiringNotification', 0, null),
+    </sql>
+  </changeSet>
+  
+  <changeSet author="mdnasim" id="Creating scheduled job for password expiry notification" dbms="oracle">
+    <sql endDelimiter="//">
+      declare 
+        userId number;
+      begin 
+        select identifier into userId from catissue_user where login_name like '$system';
+        
+        insert into os_scheduled_jobs
+          (identifier, name, created_by, start_date, end_date, scheduled_minute, scheduled_hour, scheduled_day_of_week, 
+           scheduled_day_of_month, activity_status, repeat_schedule, type, command, task_impl_fqn, rt_args_provided, rt_args_help_text)
+        values
+          (OS_SCHEDULED_JOBS_SEQ.nextVal, 'Password Expiry Notification', userId, SYSDATE, null, 30, 00, null, 
+           null, 'Active', 'DAILY', 'INTERNAL', null, 'com.krishagni.catissueplus.core.auth.services.impl.PasswordExpiringNotification', 0, null);
+      end;
+      //
+    </sql>
+  </changeSet>
+  
+  <changeSet author="mdnasim" id="Expiring password notification mail">
+    <sql>
+      call add_cfg_prop(
+        'auth', 'password_expiry_rem_notif',
+        'password_expiry_rem_notif', 'password_expiry_rem_notif_desc',
+        'INT', '60'
+      );
+    </sql>
+  </changeSet>
+  
+  <changeSet author="mdnasim" id="Number of continuous password should not repeated">
+    <sql>
+      call add_cfg_prop(
+        'auth', 'password_to_examine',
+        'password_to_examine', 'password_to_examine_desc',
+        'INT', '5'
+      );
+    </sql>
+  </changeSet>
+  
+  <changeSet author="mdnasim" id="Password pattern">
+    <sql>
+      call add_cfg_prop(
+        'auth', 'password_pattern',
+        'password_pattern', 'password_pattern_desc',
+        'STRING', '((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20})'
+      );
+    </sql>
+  </changeSet>
+</databaseChangeLog>

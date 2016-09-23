@@ -26,6 +26,7 @@ import com.krishagni.catissueplus.core.biospecimen.domain.BaseEntity;
 import com.krishagni.catissueplus.core.biospecimen.repository.DaoFactory;
 import com.krishagni.catissueplus.core.common.errors.OpenSpecimenException;
 import com.krishagni.catissueplus.core.common.events.DependentEntityDetail;
+import com.krishagni.catissueplus.core.common.util.ConfigUtil;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
 
@@ -46,10 +47,6 @@ public class User extends BaseEntity implements UserDetails {
 	
 	private static final String ENTITY_NAME = "user";
 
-	private static final Pattern pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,20})");
-	
-	private static final int PASSWDS_TO_EXAMINE = 5;
-		
 	private String lastName;
 
 	private String firstName;
@@ -353,7 +350,8 @@ public class User extends BaseEntity implements UserDetails {
 	}
 
 	private boolean isValidPasswordPattern(String password) {
-		return pattern.matcher(password).matches();
+		return Pattern.compile(ConfigUtil.getInstance().getStrSetting("auth", "password_pattern", ""))
+			.matcher(password).matches();
 	}
 	
 	private boolean isSameAsLastNPassword(String newPassword) {
@@ -363,7 +361,7 @@ public class User extends BaseEntity implements UserDetails {
 		
 		int examined = 0;
 		for (Password passwd: passwords) {
-			if (examined == PASSWDS_TO_EXAMINE) {
+			if (examined == ConfigUtil.getInstance().getIntSetting("auth", "password_to_examine", 0)) {
 				break;
 			}
 			

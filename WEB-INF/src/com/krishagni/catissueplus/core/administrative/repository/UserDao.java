@@ -40,4 +40,6 @@ public interface UserDao extends Dao<User> {
 	public void deleteFpToken(ForgotPasswordToken token);
 
 	public List<String> getActiveUsersEmailIds(Date startDate, Date endDate);
+	
+	public List<User> getUsers();
 }

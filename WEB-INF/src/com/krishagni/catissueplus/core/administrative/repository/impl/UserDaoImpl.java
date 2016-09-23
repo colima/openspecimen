@@ -161,6 +161,17 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 			.setTimestamp("endDate", endDate)
 			.list();
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<User> getUsers() {
+		return sessionFactory.getCurrentSession()
+			.createCriteria(User.class, "u")
+			.addOrder(Order.asc("u.lastName"))
+			.addOrder(Order.asc("u.firstName"))
+			.add(Restrictions.eq("u.activityStatus", "Active"))
+			.list();
+		}
 
 	private List<UserSummary> getUsers(List<Object[]> rows, UserListCriteria listCrit) {		
 		Map<Long, UserSummary> userSummaryMap = new HashMap<Long, UserSummary>();
