@@ -2,16 +2,14 @@ angular.module('os.biospecimen.participant.newreg', ['os.biospecimen.models'])
   .controller('RegisterNewCtrl', function(
     $scope, $state, cpr, 
     Participant, CollectionProtocol, CollectionProtocolRegistration) {
+
     var registeredCps = [];
 
     function init() {
+      $scope.cpList = [];
       $scope.cpr = cpr;
       $scope.newCpr = new CollectionProtocolRegistration({registrationDate: new Date()});
 
-      initRegisteredCps();
-    }
-
-    function initRegisteredCps() {
       angular.forEach(cpr.participant.registeredCps, function(cp) {
         registeredCps.push(cp.cpShortTitle);
       });
@@ -21,11 +19,7 @@ angular.module('os.biospecimen.participant.newreg', ['os.biospecimen.models'])
       $scope.cpList = [];
       CollectionProtocol.listForRegistrations($scope.cpr.getMrnSites(), searchTitle).then(
         function(cps) {
-          for (var i = 0; i < cps.length; ++i) {
-            if (registeredCps.indexOf(cps[i].shortTitle) == -1) {
-              $scope.cpList.push(cps[i]);
-            }
-          }
+          $scope.cpList = cps.filter(function(cp) { return registeredCps.indexOf(cp.shortTitle) == -1; });
         }
       );
     }
